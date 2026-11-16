@@ -1,5 +1,7 @@
 # explorearoundyou
 
+**Status: unfinished; user reports the deployed experience is not working as expected.** Read [the complete project handoff](PROJECT_CONTEXT.md) before continuing. The project now lives at `/Users/satheesh/Work/explorearoundyou`; see the [relocation record](MOVE_PROJECT.md).
+
 A playful, free, MIT-licensed map exploration website. Map-first discovery MVP.
 
 ## Run
