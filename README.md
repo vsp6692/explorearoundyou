@@ -103,3 +103,11 @@ Open **More ways to explore → Exploration mist**, or use the journal's My prog
 This is a cosmetic game treatment, not a map of verified travel or geographic coverage. No route/GPS tracking is added. Reveals are fixed-size screen halos, follow the map camera in 2D/3D, handle the closest world copy and cap at the nearest 150 on-screen visit marks. The underlying map gestures, attribution and controls remain interactive.
 
 The journal shows the latest 50 saved visit marks and counts matches among current candidates, not world-completion percentages. Open a visited place to undo its mark. Reset my progress removes visits, badges and reveals together after confirmation; bookmarks and interests remain. The mist preference is stored in `explorearoundyou-mist`; visit data continues using `explorearoundyou-visits`. It remains browser-local and is not synced by sign-in.
+
+## Pixel World map theme
+
+Use the Nature Explorer / Pixel World switch in the explorer kit. Pixel World now changes actual MapLibre paint properties: land, water, roads, vegetation, building colours, fill edges and extrusion shading. Light and dark variants are supported. Map labels, source data and real building heights remain intact. Switching themes does not reset your camera or reload tiles. The existing 2D/3D choice remains independent.
+
+Category chips, place pins, mystery pins and the destination marker use nine original 12×12 SVG sprites served locally from `public/icons/pixel`. Labels, visited checks and exploration mist remain available. Map pins fall back to their normal glyph if an icon fails to load. The preference still uses `explorearoundyou-style`. No new API or dependency is needed.
+
+This is a pixel-inspired vector-map style, not a voxel world or a replacement map engine. Geometry remains geographically accurate to the underlying dataset. To contribute icons, edit `scripts/generate-pixel-icons.mjs`, run `npm run icons:generate`, and commit the generated SVGs. They share the project's MIT license.
