@@ -286,3 +286,18 @@ Details/photo retries bypass caches, which now expire (partial details after one
 New regression files: tests/discovery-map.cjs, tests/discovery-pool.cjs, tests/detail-repair.cjs. All existing/new suites and static builds passed. No browser/real-phone acceptance is claimed. No added dependency. OAuth/Supabase setup and permanent hosting remain open; external discovery can still be slow or unavailable.
 
 Public test tunnel: https://learners-individuals-easier-study.trycloudflare.com -> local static server port 3002. Public app and worker returned HTTP 200 after rebuilding. This is temporary and requires the Mac/server/cloudflared process to stay running. Current cloudflared binary is /private/tmp/explore-public-tools/cloudflared; the tunnel process was launched via the tool session, not installed as a login service. Existing Sites identity is preserved; no replacement Site was created.
+
+
+## Shared app-design implementation (2026-11-17)
+
+The user supplied three travel-app reference images and set the end goal as matching Android/iOS apps with the website using the same style. Implemented the website in that direction: warm off-white, charcoal controls, photo-led rounded cards, pastel collections and persistent Home/My Trips/Create/Map/Profile navigation. Home is now the default; shared-place URLs still open Map directly. This newer reference supersedes the earlier always-map-first homepage preference.
+
+TravelApp owns one shared account hook and app navigation. Map is lazy-mounted on first use and retained while switching tabs. Explorer accepts explicit place/category requests, communicates bookmark/visit changes to Home/Profile, and offers Add to trip from real details. Selected/shared places are no longer cleared by a later filter-reset effect. Existing map discovery, cuisine controls, saved places and game features remain reachable.
+
+New trips use validated localStorage records (100 trips, 100 places and 100 text memories per trip). Working creation/edit form, status filters/search, bookmark toggle, itinerary from actual saved places, local text memories, confirmed deletion and a photo tab for explicitly mapped stop images. No fake trips/counts/photos/reviews. Cover photos are decorative inspiration, locally hosted with per-image Commons licenses and visible Profile credits. Personal photo uploads and cross-device trip sync remain unimplemented.
+
+Added standalone web manifest, original SVG/PNG icons, Apple home-screen metadata and safe-area viewport. This is a web app foundation, not completed native binaries or offline support. `docs/MOBILE_APP_PLAN.md` records the design contract and a proposed Capacitor/static-out native path, with real device, native permissions/OAuth, storage, signing and store steps still required.
+
+Trip/domain regression tests and existing tests pass; static production build passed during implementation. Browser/real-device visual and interaction acceptance is not claimed. Prior public tunnel expired; create/verify a fresh one for handoff. Sites NOT_FOUND and unconfigured OAuth remain independent blockers.
+
+Final handoff for this pass: fresh public test URL https://nut-influences-unknown-causing.trycloudflare.com points to the restarted static server on port 3002. Verified public HTML equals the local export and manifest/cover images/icons/map worker all return HTTP 200. Prior temporary URL is expired. Static server now sends proper manifest and JPEG/WebP MIME types. Regression suites, typecheck, static export and exported HTML/asset checks pass; mobile/browser visual acceptance is still pending. Native app binaries and store releases have not been created.

@@ -1,10 +1,17 @@
 # Current implementation and remaining work
 
-Updated 2026-11-16. Builds and automated tests do not establish real-phone acceptance.
+Updated 2026-11-17. Builds and automated tests do not establish real-phone acceptance.
+
+## Shared web and native design direction
+
+The supplied travel-app references define the visual target for web, iOS and Android: warm backgrounds, photo cards, pastel accents and Home/My Trips/Create/Map/Profile navigation. See `docs/MOBILE_APP_PLAN.md`. The website now implements that app shell plus device-local trips, itineraries and text memories. Native shells, device integration and store builds are still future work.
 
 ## Implemented
 
-- Map-first exploration, submitted worldwide location search and permission-based location.
+- App-style Home, My Trips, Create, Map and Profile navigation, with desktop responsive layouts.
+- Local trip creation/editing, date status filters/search, saved-place itineraries, text journal entries and mapped-stop photo gallery.
+- Real interactive map, submitted worldwide location search and permission-based location.
+- Home-screen manifest, original icons and mobile safe-area support; no offline map claim.
 - Automatic discoveries from loaded map data; immediate Explore/Surprise; explicit bounded Overpass search.
 - Category/radius rules, natural-text category suggestions, editable interests and preferred discoveries.
 - Nature and Pixel World light/dark map palettes, mapped 3D buildings, flat-view switch and original local pixel sprites.
@@ -17,6 +24,8 @@ Updated 2026-11-16. Builds and automated tests do not establish real-phone accep
 
 ## Next acceptance checks
 
+0. Test Home → create trip → save a real map place → add to itinerary → add memory → reload → reopen and find the stop on Map. Confirm failure notices under denied/full browser storage. Personal photo uploads, trip cloud sync and native apps are not yet built.
+
 1. On a real phone, verify map rendering and touch gestures, category changes, Explore, Surprise, place details, panel reachability and 2D/3D switching. Check Nature/Pixel and light/dark combinations, icon legibility and switching without camera resets.
 2. Verify shared links open correctly, native sharing/copy cancellation and photo success/failure states.
 3. Verify saved places/interests/visits after reload, keyboard navigation, screen-reader announcements and location permission allow/deny. Check mist alignment while panning/tilting, on/off persistence and undo/reset clearing reveals.
@@ -24,7 +33,7 @@ Updated 2026-11-16. Builds and automated tests do not establish real-phone accep
 
 ## Public testing and permanent hosting
 
-A temporary public test link serves the current local static export: https://learners-individuals-easier-study.trycloudflare.com. It requires this Mac, the app server on port 3002 and the cloudflared process to remain running. It is not permanent hosting.
+A temporary public test link serves the current local static export: https://nut-influences-unknown-causing.trycloudflare.com. It requires this Mac, the app server on port 3002 and the cloudflared process to remain running. It is not permanent hosting.
 
 The existing Sites project still returns NOT_FOUND and its last ChatGPT URL returns HTTP 404. Restoring that Site/account connection or configuring permanent hosting is still needed.
 

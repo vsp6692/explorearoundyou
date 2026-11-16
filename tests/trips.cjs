@@ -1,0 +1,15 @@
+const assert=require('node:assert/strict');
+const {readTrips,validateTrip,tripStatus,validDate,tripDates}=require('../.test-output/trips.js');
+const input={name:'  Little escape  ',destination:'Chennai',startDate:'2026-11-17',endDate:'2026-11-20',travellers:2,cover:'coast'};
+assert.equal(validateTrip(input).name,'Little escape');
+for(const change of [{name:''},{destination:''},{startDate:'2026-11-21'},{endDate:''},{startDate:'2026-02-30'},{travellers:0},{travellers:21},{travellers:1.5},{cover:'bad'}])assert.throws(()=>validateTrip({...input,...change}));
+assert.equal(validDate('2026-02-30'),false);assert.equal(validDate('2024-02-29'),true);
+const trip={...input,id:'trip-1',createdAt:'2026-11-17T00:00:00Z',places:[],memories:[],bookmarked:false};
+assert.equal(tripStatus(trip,new Date('2026-11-18T12:00:00')),'Ongoing');assert.equal(tripStatus(trip,new Date('2026-11-16T12:00:00')),'Upcoming');assert.equal(tripStatus(trip,new Date('2026-11-21T12:00:00')),'Completed');assert.equal(tripStatus({...trip,startDate:'',endDate:''}),'Draft');assert.equal(tripStatus(trip,new Date('2026-11-20T12:00:00')),'Ongoing');
+assert.equal(readTrips('bad').length,0);assert.equal(readTrips('{}').length,0);assert.equal(readTrips(JSON.stringify([null,{},trip,trip])).length,1);
+const place={id:'node/1',name:'Cafe',lat:13,lon:80,category:'Food',kind:'cafe'};
+const stored=readTrips(JSON.stringify([{...trip,unrelated:'ignored',places:[place,{...place,id:'bad',lat:200}],memories:[{id:'m1',text:'Nice evening',createdAt:trip.createdAt},{id:'m1',text:'duplicate',createdAt:trip.createdAt},{id:'bad',text:'',createdAt:'bad'}]}]));
+assert.equal(stored[0].places.length,1);assert.equal(stored[0].memories.length,1);assert.equal(stored[0].unrelated,undefined);assert.equal(stored[0].memories[0].text,'Nice evening');
+assert.ok(tripDates(trip).length);assert.equal(tripDates({...trip,startDate:'',endDate:''}),'Dates to dream about');
+assert.equal(readTrips(JSON.stringify(Array.from({length:110},(_,i)=>({...trip,id:String(i)})))).length,100);
+console.log('PASS: trip date validation/status, local restore bounds, duplicate/corrupt records and honest counts');

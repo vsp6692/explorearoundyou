@@ -6,7 +6,8 @@ import {cuisineNames} from '../lib/cuisines';
 import {safeWebsite} from '../lib/search-intent';
 import PlacePhoto from './PlacePhoto';
 import SharePlace from './SharePlace';
-export default function PlaceCard({place,center,surprise,saved,visited,onClose,onSave,onVisit}:{place:Place;center:{lat:number;lon:number};surprise:boolean;saved:boolean;visited:boolean;onClose:()=>void;onSave:(place:Place)=>void;onVisit:(place:Place)=>void}){
+import AppIcon from './AppIcon';
+export default function PlaceCard({place,center,surprise,saved,visited,onClose,onSave,onVisit,onAddToTrip}:{place:Place;center:{lat:number;lon:number};surprise:boolean;saved:boolean;visited:boolean;onClose:()=>void;onSave:(place:Place)=>void;onVisit:(place:Place)=>void;onAddToTrip?:(place:Place)=>void}){
  const [detail,setDetail]=useState(place),[status,setStatus]=useState('Finding mapped details…'),[retry,setRetry]=useState(0),[busy,setBusy]=useState(true);
  useEffect(()=>{
   const controller=new AbortController();let active=true;
@@ -24,6 +25,7 @@ export default function PlaceCard({place,center,surprise,saved,visited,onClose,o
   <p className="place-subtitle">{detail.kind} · {distanceKm(center.lat,center.lon,detail.lat,detail.lon).toFixed(1)} km away</p>
   <PlacePhoto key={detail.photoTitle||'no-photo'} title={detail.photoTitle} name={detail.name}/>
   <div className="place-actions"><button onClick={()=>onSave(detail)}>{saved?'♥ Saved':'♡ Save place'}</button><a target="_blank" rel="noreferrer" href={`https://www.google.com/maps/dir/?api=1&destination=${detail.lat},${detail.lon}`}>Directions ↗</a></div>
+  {onAddToTrip&&<button className="add-trip-button" onClick={()=>onAddToTrip(detail)}><AppIcon name="plus" size={18}/> Add to a trip</button>}
   <h3>About this place</h3>
   <p>{detail.description||`Listed as ${detail.kind} on the map. A description hasn’t been added to the available data.`}</p>
   {detail.descriptionSource&&<a className="osm-link" href={detail.descriptionSource} target="_blank" rel="noreferrer">Description from Wikidata ↗</a>}

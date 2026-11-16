@@ -1,2 +1,2 @@
-import Explorer from '../components/Explorer';
-export default function Page(){return <Explorer/>}
+import TravelApp from '../components/TravelApp';
+export default function Page(){return <TravelApp/>}

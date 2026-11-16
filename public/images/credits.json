@@ -1,0 +1,32 @@
+[
+  {
+    "id": "coast",
+    "title": "Marina beach, Chennai aerial view.jpg",
+    "author": "Saiphani02",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Marina_beach,_Chennai_aerial_view.jpg",
+    "file": "/images/journey-coast.jpg",
+    "usage": "Decorative inspiration cover, displayed cropped. Not a photo of the user\u2019s destination."
+  },
+  {
+    "id": "mountains",
+    "title": "Landscape Arnisee-region.JPG",
+    "author": "Simon Koopmann",
+    "license": "CC BY-SA 2.5",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+    "source": "https://commons.wikimedia.org/wiki/File:Landscape_Arnisee-region.JPG",
+    "file": "/images/journey-mountains.jpg",
+    "usage": "Decorative inspiration cover, displayed cropped. Not a photo of the user\u2019s destination."
+  },
+  {
+    "id": "city",
+    "title": "Chennai Central D.jpg",
+    "author": "Augustus Binu/ facebook",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Chennai_Central_D.jpg",
+    "file": "/images/journey-city.jpg",
+    "usage": "Decorative inspiration cover, displayed cropped. Not a photo of the user\u2019s destination."
+  }
+]
