@@ -95,3 +95,11 @@ Place cards can load Wikimedia Commons photos referenced by OSM's `wikimedia_com
 Explore/Surprise actions now sit above the optional controls; mood, journal and mystery controls are under More ways to explore. Opened panels receive keyboard focus and restore the previous connected control when closed. Malformed saved places are discarded safely. Mobile visual/assistive-technology acceptance remains pending.
 
 Current remaining work is maintained in [ROADMAP.md](ROADMAP.md).
+
+## Exploration mist and visited collection
+
+Open **More ways to explore → Exploration mist**, or use the journal's My progress tab. The optional overlay mutes unexplored map areas while small clear halos follow the places you manually marked visited. Marked pins have a check badge; unvisited pins are muted while this mode is active. Visited places are never chosen as mystery pins. The on-map “Mist on · turn off” button restores the normal view immediately.
+
+This is a cosmetic game treatment, not a map of verified travel or geographic coverage. No route/GPS tracking is added. Reveals are fixed-size screen halos, follow the map camera in 2D/3D, handle the closest world copy and cap at the nearest 150 on-screen visit marks. The underlying map gestures, attribution and controls remain interactive.
+
+The journal shows the latest 50 saved visit marks and counts matches among current candidates, not world-completion percentages. Open a visited place to undo its mark. Reset my progress removes visits, badges and reveals together after confirmation; bookmarks and interests remain. The mist preference is stored in `explorearoundyou-mist`; visit data continues using `explorearoundyou-visits`. It remains browser-local and is not synced by sign-in.

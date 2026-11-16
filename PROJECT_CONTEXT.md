@@ -240,3 +240,13 @@ Added safe place links/native sharing/copy fallback. Share URLs contain place na
 Main Explore/Surprise controls moved above optional controls. Mood/journal/mystery moved into an expandable section. Panel mount/close focus handling added without trapping focus in these nonmodal panels. Added strict bookmark restoration so malformed optional fields or out-of-range coordinates cannot break rendering/navigation.
 
 Tests cover photo source/license/attribution checks, missing data, cache/errors/abort, share round-trip/bounds/token exclusion and corrupt bookmarks; the existing suites and production build passed. New sharing/photo/mobile interactions have not been browser-tested. No paid API, new production dependency, credentials or backend added. See ROADMAP.md for current actual remaining work; older sections are historical.
+
+## Next phase: local discovery-progress map (2026-11-16)
+
+Implemented optional exploration mist via `ExplorationMist.tsx` and `lib/exploration.ts`. A pointer-transparent SVG overlay lightly mutes the map and cuts fixed-size clear halos around manually marked visits. It follows map movement/resize with animation-frame throttling and nearest-world longitude wrapping; up to 150 on-screen halos are rendered. This is cosmetic, not measured territory/route coverage. It does not add GPS tracking, backend storage or dependencies.
+
+Mode is off by default and stored locally under `explorearoundyou-mist`. Toggle in More ways to explore or journal My progress; while active, an always-available map control turns it off. Existing visit records provide the data. Visited pins receive check marks and accessible status labels; only unvisited rendered pins are eligible for mysteries. Readable place lists remain available.
+
+Journal now lists the most recent 50 visit marks for reopening/undo, plus current-candidate progress counts with explicit non-world-percentage wording. Existing two-step reset clears visits/badges/reveals while preserving bookmarks/interests. Map halos are derived, so undo/reset does not leave separate stale reveal records.
+
+Tests passed for duplicate-source visit matching, nearby different names, distant same names, empty/reset states, finite/projected viewport coordinates, antimeridian handling and render limits. All existing tests and production build passed. New mist/3D/mobile and assistive-technology interactions still need browser/device acceptance. OAuth configuration remains outstanding; do not describe the whole product as finished.
