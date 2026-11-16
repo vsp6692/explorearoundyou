@@ -71,3 +71,68 @@ header{background:linear-gradient(105deg,#fff5dd,#fff1f6 55%,#edfaf4);border-bot
 .pixel-sprite,.category-sprite{display:block;image-rendering:pixelated;pointer-events:none}.pixel-sprite{transition:translate .15s steps(2,end)}.place-pin:hover .pixel-sprite{translate:0 -2px}
 .discovery.pixel-world .mist-wash{fill:#a4b68a}.discovery.dark.pixel-world .mist-wash{fill:#263449}.discovery.dark.pixel-world .brand,.discovery.dark.pixel-world .brand-green{color:#f5e7b3}.discovery.dark.pixel-world .categories button.active{background:#cbb361;color:#253b34}
 @media(prefers-reduced-motion:reduce){.pixel-sprite{transition:none}.place-pin:hover .pixel-sprite{translate:none}}
+
+/* Calm map controls: fixed choices, no horizontal dragging or stacked panels. */
+.discovery header{height:68px;padding:0 24px}
+.discovery .canvas{margin:0;border:0;border-radius:0}
+.discovery .top-controls{width:min(880px,calc(100% - 32px));top:16px}
+.discovery .search{border-radius:14px;padding:6px 8px 6px 16px;gap:10px}
+.discovery .search input{font-size:14px}
+.discovery .categories{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));overflow:visible;padding:0;margin:10px 0 0;gap:6px}
+.discovery .categories button{justify-content:center;gap:5px;white-space:normal;min-width:0;min-height:44px;padding:8px 5px;border:1px solid #ffffffb0;border-radius:12px;box-shadow:0 2px 8px #243c3510;font-size:11px}
+.discovery .categories button.active{border-color:#8f751f;box-shadow:inset 0 0 0 1px #8f751f;transform:none}
+.discovery .categories small{display:none}
+.discovery .explorer-kit{left:18px;bottom:28px;width:330px;padding:16px;max-height:calc(100% - 200px);border-radius:16px}
+.discovery .kit-title small{display:none}
+.discovery .kit-options{margin:12px 0 0}
+.discovery .kit-more{margin:8px 0 0}
+.discovery .list-toggle{padding-top:10px;margin-top:8px}
+.discovery .map-caption{left:18px;top:145px;bottom:auto;padding:10px 14px;max-width:300px;border:0;box-shadow:0 3px 12px #1c4b3814}
+.discovery .map-view-controls{top:145px;right:12px}
+.discovery .place-card{right:60px;bottom:28px;width:360px;max-height:calc(100% - 175px);padding:24px;border-radius:18px}
+.discovery .place-card h2{padding-right:22px;font-size:24px;overflow-wrap:anywhere}
+.discovery .place-card h3{font-size:15px;margin:20px 0 8px}
+.discovery .place-card p{font-size:13px;line-height:1.65}
+.discovery .place-card .data-note{font-size:11px}
+.discovery .place-subtitle{text-transform:capitalize}
+.discovery .place-actions{margin:14px 0;display:grid;grid-template-columns:1fr 1fr}
+.discovery .place-actions>*{text-align:center;font-weight:600;min-height:44px}
+.discovery .place-actions a{background:#366c50;color:white}
+.discovery .place-photo img{max-height:240px;object-fit:cover;aspect-ratio:16/10}
+.photo-placeholder{min-height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;background:linear-gradient(130deg,#d9edcf,#dcecf4);color:#365d4c;border-radius:12px;padding:18px}
+.photo-placeholder>span{font-size:30px}.discovery .photo-placeholder p{font-size:12px;color:#365d4c;margin:5px 0}
+.detail-status{border-radius:10px;background:#9cbf7e15;padding:8px 12px}.detail-status button{border:0;background:transparent;color:var(--ink);text-decoration:underline;padding:8px 0;font-size:12px}
+.venue-website{display:block;color:var(--ink);font-size:13px;padding:10px 0}
+.discovery .place-pin.nature-pin{border-radius:50%;width:40px;height:40px;box-shadow:0 2px 8px #25463235;border:2px solid white;background:#fffef5}
+.discovery .place-pin.group-pin{background:#3f7357;color:white;font:bold 15px Arial;border:3px solid #fffef5;box-shadow:0 2px 10px #25463230}
+.discovery .destination-pin{pointer-events:none;opacity:.75}
+.cuisine-picker{background:var(--surface);border:1px solid #b8cbb3;border-radius:14px;margin-top:8px;padding:8px 12px;width:min(480px,100%);box-shadow:0 4px 16px #25463215}
+.cuisine-picker summary{font-size:13px;font-weight:bold;padding:8px 0;cursor:pointer}
+.cuisine-picker>div{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:4px 0}
+.cuisine-picker button{border:1px solid #b8cbb3;background:var(--surface);color:var(--ink);border-radius:9px;padding:8px 4px;min-height:44px;font-size:11px}
+.cuisine-picker button[aria-pressed=true]{background:#e5edc3;border-color:#769149;color:#345031}
+.cuisine-picker p{font-size:10px;line-height:1.5;color:var(--muted);margin:8px 0}
+.cuisine-picker .find-cuisine{width:100%;background:#366c50;color:white;font-weight:600}
+.discovery .toast{top:auto;bottom:28px;max-width:440px;left:50%;z-index:7;background:var(--surface);border:1px solid #b8cbb3;font-size:12px}
+.discovery .panel-open{isolation:isolate}
+@media(min-width:701px){.discovery:has(.cuisine-picker) .map-caption{top:auto;bottom:370px}}
+@media(max-width:700px){
+ .discovery{min-height:540px}.discovery header{height:60px;padding:0 10px}.discovery .brand small{display:none}
+ .discovery .top-controls{top:10px;width:calc(100% - 20px)}
+ .discovery .search input{font-size:12px}.discovery .search button{min-height:44px}
+ .discovery .categories{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-top:7px}
+ .discovery .categories button{font-size:10px;padding:6px 3px;min-height:38px}
+ .discovery .categories span{font-size:16px}
+ .discovery .map-caption{display:none}
+ .discovery .map-view-controls{top:164px;right:10px;max-width:65%;gap:4px}
+ .discovery:has(.cuisine-picker) .map-view-controls{top:auto;bottom:255px}
+ .discovery .explorer-kit{bottom:28px;left:10px;right:52px;width:auto;max-width:360px;max-height:38%;padding:12px}
+ .discovery .kit-title{display:none}.discovery .adventure-actions{margin-top:0}.discovery .adventure-actions button{min-height:44px}
+ .discovery .place-card{left:10px;right:52px;bottom:28px;width:auto;max-width:none;max-height:calc(100% - 192px);padding:20px}
+ .discovery.panel-open .explorer-kit,.discovery.panel-open .cuisine-picker{display:none}
+ .discovery .place-card h2{font-size:22px}.discovery .place-photo img{max-height:180px}
+ .discovery .toast{bottom:30px;max-height:120px;overflow:auto;padding:10px;width:calc(100% - 24px)}
+ .cuisine-picker{padding:4px 10px;max-height:220px;overflow:auto}.cuisine-picker>div{gap:4px}.cuisine-picker button{font-size:10px;padding:6px 2px}
+ .discovery footer{font-size:8px;padding:8px 12px}
+}
+@media(max-height:650px){.discovery .explorer-kit{max-height:34%}.discovery .place-card{max-height:calc(100% - 160px)}.discovery .kit-title{display:none}}

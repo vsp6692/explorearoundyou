@@ -9,7 +9,7 @@ export function readBookmarks(raw:string|null):Place[]{
   for(const p of rows.slice(0,2000)){
    if(!p||typeof p.id!=='string'||seen.has(p.id)||typeof p.name!=='string'||!p.name.trim()||!HISTORY_CATEGORIES.includes(p.category)||!Number.isFinite(p.lat)||Math.abs(p.lat)>90||!Number.isFinite(p.lon)||Math.abs(p.lon)>180)continue;
    const text=(key:string,max=600)=>typeof p[key]==='string'?p[key].slice(0,max):undefined;
-   result.push({id:p.id,name:p.name.slice(0,200),lat:p.lat,lon:p.lon,category:p.category,kind:text('kind',100)||'place',distance:0,description:text('description'),address:text('address'),openingHours:text('openingHours',200),cuisine:text('cuisine',200),website:safeWebsite(text('website',2000)),photoTitle:commonsTitle(p.photoTitle)});seen.add(p.id);
+   result.push({id:p.id,name:p.name.slice(0,200),lat:p.lat,lon:p.lon,category:p.category,kind:text('kind',100)||'place',distance:0,description:text('description'),address:text('address'),openingHours:text('openingHours',200),cuisine:text('cuisine',200),website:safeWebsite(text('website',2000)),photoTitle:commonsTitle(p.photoTitle),osmRef:/^(node|way|relation)\/\d+$/.test(text('osmRef',100)||'')?text('osmRef',100):undefined,wikidata:/^Q\d+$/.test(text('wikidata',100)||'')?text('wikidata',100):undefined,descriptionSource:/^https:\/\/www\.wikidata\.org\/wiki\/Q\d+$/.test(text('descriptionSource',200)||'')?text('descriptionSource',200):undefined});seen.add(p.id);
   }
   return result;
  }catch{return []}

@@ -10,7 +10,8 @@ Updated 2026-11-16. Builds and automated tests do not establish real-phone accep
 - Nature and Pixel World light/dark map palettes, mapped 3D buildings, flat-view switch and original local pixel sprites.
 - Local bookmarks, manually recorded visits, badges, mystery pins and three-stop ideas.
 - Optional exploration mist, visited-pin checks and a journal collection of recent visit marks.
-- Basic place details, external directions, licensed Commons photos when explicitly mapped and supported.
+- Selected-place detail matching, external directions, automatically loaded licensed Commons photos from explicit OSM/Wikidata associations.
+- Responsive category grid, separated pin groups, gentler Nature 3D, and cuisine choices based on mapped tags (public discovery service still unreliable).
 - Shareable place links, native share/copy fallback, simpler mobile controls and basic panel focus handling.
 - Prepared optional Google/Facebook + Supabase profiles/history/interest integration; **not activated**.
 
@@ -20,6 +21,10 @@ Updated 2026-11-16. Builds and automated tests do not establish real-phone accep
 2. Verify shared links open correctly, native sharing/copy cancellation and photo success/failure states.
 3. Verify saved places/interests/visits after reload, keyboard navigation, screen-reader announcements and location permission allow/deny. Check mist alignment while panning/tilting, on/off persistence and undo/reset clearing reveals.
 4. Check the deployed origin under slow/offline conditions. External tiles/geocoding/Overpass/Commons can fail independently.
+
+## Publication blocker
+
+The existing Sites project returns NOT_FOUND and its last public URL returns HTTP 404. These newest changes are local until hosting access is restored; no replacement public URL is available.
 
 ## Requires external configuration
 
