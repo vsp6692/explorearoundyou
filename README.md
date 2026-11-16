@@ -53,3 +53,11 @@ Run `npm run build` followed by `npm run preview` to serve the exact static expo
 Discovery now defaults to the VK Maps global Overpass instance (`https://maps.mail.ru/osm/tools/overpass/api/interpreter`), which returned real Chennai results during verification. This provider receives the coordinates and categories of explicit discovery requests. Override with `NEXT_PUBLIC_OVERPASS_URL` at build time. Public provider availability is still external to the app.
 
 If Overpass is unavailable, discovery can use named places in loaded map tiles within the current viewport (also available through “Explore visible map places”). This is a limited viewport result set, not an exhaustive radius search. Zoom in for more detailed map data. Categories are inferred from map tags; map-derived entries link to their coordinates rather than an invented OSM object ID. The initial zoom is 14 to expose useful nearby labels.
+
+## Text discovery and place information
+
+“Search by mood or words” applies simple local rules around the selected location. Examples: `Quiet cafés within 3 km`, `Nature within 500 m`, `Fun for kids`. Categories and radii from 100 m to 10 km are supported; café searches also filter the mapped place type. The current implementation searches loaded map data immediately; Explore nearby uses the same filters for its bounded Overpass results. Use the separate city search to change location.
+
+Mood terms suggest a category; they do not verify quietness, romance or suitability for children. Budget, hidden-gem popularity and time-sensitive requests are explicitly reported as unverified/unapplied. No paid AI service is used. OSM-supplied descriptions, addresses, cuisine, opening-hours strings and websites are displayed when present; hours are not interpreted as live open/closed status. Website URLs accept HTTP(S) only. Map-tile results often lack these extra fields.
+
+Surprise Me first selects from current discoveries or loaded map data before requesting the network. Dependencies remain unchanged. `npm test` now covers the rule parser, radius bounds/units, café matching, unsupported price claims and safe external links, in addition to discovery tests. The development configuration explicitly permits `127.0.0.1` to address the observed blocked-HMR-origin warning; physical-device and development hydration behavior still need confirmation.

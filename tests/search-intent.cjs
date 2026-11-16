@@ -1,0 +1,14 @@
+const assert=require('node:assert/strict');
+const {parseSearchIntent:parse,matchesIntent,safeWebsite}=require('../.test-output/search-intent.js');
+const q=parse('Quiet cafés within 5 km under ₹500');
+assert.equal(q.category,'Food');assert.equal(q.radius,5);assert.equal(q.kind,'cafe');assert.equal(q.mood,'quiet');assert.ok(q.notices.some(n=>n.includes('Budget was not applied')));
+assert.equal(parse('nature within 500 m').radius,.5);
+assert.equal(parse('cafes under 3 km').notices.some(n=>n.includes('Budget')),false);
+assert.equal(parse('cafes under 500 rupees').notices.some(n=>n.includes('Budget')),true);
+assert.equal(parse('peaceful evening').category,'Parks');
+assert.equal(parse('fun for kids this weekend').category,'Fun');
+assert.ok(parse('hidden gems').notices.some(n=>n.includes('Popularity')));
+assert.throws(()=>parse('parks within 20 km'));assert.throws(()=>parse(''));
+assert.equal(matchesIntent({kind:'restaurant'},q),false);assert.equal(matchesIntent({kind:'cafe'},q),true);
+assert.equal(safeWebsite('javascript:alert(1)'),undefined);assert.equal(safeWebsite('https://name:secret@example.com'),undefined);assert.equal(safeWebsite('https://example.com'),'https://example.com/');
+console.log('PASS: category, café subtype, radius units/bounds, mood/price caveats and safe links');
