@@ -7,7 +7,8 @@ import {safeWebsite} from '../lib/search-intent';
 import PlacePhoto from './PlacePhoto';
 import SharePlace from './SharePlace';
 import AppIcon from './AppIcon';
-export default function PlaceCard({place,center,surprise,saved,visited,onClose,onSave,onVisit,onAddToTrip}:{place:Place;center:{lat:number;lon:number};surprise:boolean;saved:boolean;visited:boolean;onClose:()=>void;onSave:(place:Place)=>void;onVisit:(place:Place)=>void;onAddToTrip?:(place:Place)=>void}){
+import type {CommonsPhoto} from '../lib/photos';
+export default function PlaceCard({place,center,surprise,saved,visited,onClose,onSave,onVisit,onAddToTrip,photo,onPhoto}:{place:Place;center:{lat:number;lon:number};surprise:boolean;saved:boolean;visited:boolean;onClose:()=>void;onSave:(place:Place)=>void;onVisit:(place:Place)=>void;onAddToTrip?:(place:Place)=>void;photo?:CommonsPhoto;onPhoto?:(photo:CommonsPhoto)=>void}){
  const [detail,setDetail]=useState(place),[status,setStatus]=useState('Finding mapped details…'),[retry,setRetry]=useState(0),[busy,setBusy]=useState(true);
  useEffect(()=>{
   const controller=new AbortController();let active=true;
@@ -23,12 +24,12 @@ export default function PlaceCard({place,center,surprise,saved,visited,onClose,o
   <div className="eyebrow">{surprise?'🎁 YOUR SURPRISE':'A LITTLE DISCOVERY'}</div>
   <h2>{detail.name}</h2>
   <p className="place-subtitle">{detail.kind} · {distanceKm(center.lat,center.lon,detail.lat,detail.lon).toFixed(1)} km away</p>
-  <PlacePhoto key={detail.photoTitle||'no-photo'} title={detail.photoTitle} name={detail.name}/>
+  <PlacePhoto key={detail.photoTitle||'no-photo'} title={detail.photoTitle} name={detail.name} initialPhoto={photo} onPhoto={onPhoto}/>
   <div className="place-actions"><button onClick={()=>onSave(detail)}>{saved?'♥ Saved':'♡ Save place'}</button><a target="_blank" rel="noreferrer" href={`https://www.google.com/maps/dir/?api=1&destination=${detail.lat},${detail.lon}`}>Directions ↗</a></div>
   {onAddToTrip&&<button className="add-trip-button" onClick={()=>onAddToTrip(detail)}><AppIcon name="plus" size={18}/> Add to a trip</button>}
   <h3>About this place</h3>
   <p>{detail.description||`Listed as ${detail.kind} on the map. A description hasn’t been added to the available data.`}</p>
-  {detail.descriptionSource&&<a className="osm-link" href={detail.descriptionSource} target="_blank" rel="noreferrer">Description from Wikidata ↗</a>}
+  {detail.descriptionSource&&<a className="osm-link" href={detail.descriptionSource} target="_blank" rel="noreferrer">Description source ↗</a>}
   {detail.address&&<p>📍 {detail.address}</p>}
   {detail.category==='Food'&&<p><strong>Cuisine</strong><br/>{detail.cuisine?cuisineNames(detail.cuisine).join(' · '):'Not listed by the map contributor.'}</p>}
   {detail.openingHours&&<p><strong>Mapped hours</strong><br/>{detail.openingHours}<br/><small>Confirm with the venue before visiting.</small></p>}

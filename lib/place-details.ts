@@ -46,7 +46,7 @@ export async function loadPlaceDetails(place:Place,signal:AbortSignal,refresh=fa
  else{const dy=.004,dx=Math.min(.1,dy/Math.max(.1,Math.cos(place.lat*Math.PI/180)));url.search=new URLSearchParams({q:place.name,viewbox:`${Math.max(-180,place.lon-dx)},${Math.min(90,place.lat+dy)},${Math.min(180,place.lon+dx)},${Math.max(-90,place.lat-dy)}`,bounded:'1',format:'jsonv2',limit:'5',extratags:'1',namedetails:'1',addressdetails:'1'}).toString()}
  let result=place,partial=false;
  try{
-  if(/^Q\d+$/.test(place.wikidata||'')&&ref){
+  if(/^Q\d+$/.test(place.wikidata||'')&&(ref||/^wiki:\d+$/.test(place.id))){
    // Real OSM results already identify their Wikidata entity; avoid a second
    // geocoder dependency before displaying that entity’s linked information.
    result=place;

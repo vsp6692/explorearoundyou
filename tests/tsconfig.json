@@ -1,1 +1,17 @@
-{"compilerOptions": {"target": "ES2022", "module": "CommonJS", "outDir": "../.test-output", "types": ["node"], "skipLibCheck": true, "rootDir": "../lib"}, "include": ["../lib/*.ts"]}
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "outDir": "../.test-output",
+    "types": [
+      "node"
+    ],
+    "skipLibCheck": true,
+    "rootDir": "../lib",
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "../lib/*.ts"
+  ]
+}

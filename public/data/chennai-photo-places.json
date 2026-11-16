@@ -1,0 +1,102 @@
+[
+  {
+    "place": {
+      "id": "wiki:33070635",
+      "name": "Chennakesava Perumal Temple",
+      "lat": 13.08388889,
+      "lon": 80.27,
+      "category": "Attractions",
+      "kind": "nearby landmark",
+      "distance": 0.15239591350048523,
+      "wikidata": "Q5091480",
+      "website": "https://en.wikipedia.org/?curid=33070635",
+      "description": "Chennakesava Perumal Temple is a Hindu temple situated in the Peddanaickenpettah, George Town neighbourhood of Chennai city, Tamil Nadu, India. It is dedicated to Chenna Kesava Perumal.",
+      "descriptionSource": "https://en.wikipedia.org/?curid=33070635",
+      "photoTitle": "File:Chenna Kesava Perumal temple precincts with mandapam (cropped).jpg"
+    },
+    "photo": {
+      "src": "/images/nearby/chennai-1.jpg",
+      "page": "https://commons.wikimedia.org/wiki/File:Chenna_Kesava_Perumal_temple_precincts_with_mandapam_(cropped).jpg",
+      "title": "Chenna Kesava Perumal temple precincts with mandapam (cropped).jpg",
+      "author": "Pbkrish",
+      "credit": "Own work",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  {
+    "place": {
+      "id": "wiki:2386686",
+      "name": "Jawaharlal Nehru Stadium (Chennai)",
+      "lat": 13.08555556,
+      "lon": 80.27166667,
+      "category": "Attractions",
+      "kind": "nearby landmark",
+      "distance": 0.33433976426791134,
+      "wikidata": "Q6165990",
+      "website": "https://en.wikipedia.org/?curid=2386686",
+      "description": "Jawaharlal Nehru Stadium is a multi-purpose stadium in Chennai, Tamil Nadu. The stadium is located at Sydenhams road in Park Town, besides the Chennai Central suburban railway station.",
+      "descriptionSource": "https://en.wikipedia.org/?curid=2386686",
+      "photoTitle": "File:Nehru Stadium Chennai.jpg"
+    },
+    "photo": {
+      "src": "/images/nearby/chennai-2.jpg",
+      "page": "https://commons.wikimedia.org/wiki/File:Nehru_Stadium_Chennai.jpg",
+      "title": "Nehru Stadium Chennai.jpg",
+      "author": "ArsenalFan700",
+      "credit": "Own work",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  {
+    "place": {
+      "id": "wiki:45139",
+      "name": "Chennai",
+      "lat": 13.0825,
+      "lon": 80.275,
+      "category": "Attractions",
+      "kind": "area overview",
+      "distance": 0.4662586548767687,
+      "wikidata": "Q1352",
+      "website": "https://en.wikipedia.org/?curid=45139",
+      "description": "Chennai, also known as Madras, is the capital and largest city of Tamil Nadu, the southernmost state of India. It is located on the Coromandel Coast of the Bay of Bengal.",
+      "descriptionSource": "https://en.wikipedia.org/?curid=45139",
+      "photoTitle": "File:Ripon Building aerial view.jpg"
+    },
+    "photo": {
+      "src": "/images/nearby/chennai-3.jpg",
+      "page": "https://commons.wikimedia.org/wiki/File:Ripon_Building_aerial_view.jpg",
+      "title": "Ripon Building aerial view.jpg",
+      "author": "Saiphani02",
+      "credit": "Own work",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  {
+    "place": {
+      "id": "wiki:20706302",
+      "name": "St. Andrew's Church, Chennai",
+      "lat": 13.0798,
+      "lon": 80.2637,
+      "category": "Attractions",
+      "kind": "nearby landmark",
+      "distance": 0.8238929166027902,
+      "wikidata": "Q189141",
+      "website": "https://en.wikipedia.org/?curid=20706302",
+      "description": "St. Andrew's Church (Tamil: புனித அந்திரேயா கோவில்) in Egmore, Chennai, India was built to serve the Scottish community in Chennai.",
+      "descriptionSource": "https://en.wikipedia.org/?curid=20706302",
+      "photoTitle": "File:St Andrews Church - The Kirk.jpg"
+    },
+    "photo": {
+      "src": "/images/nearby/chennai-4.jpg",
+      "page": "https://commons.wikimedia.org/wiki/File:St_Andrews_Church_-_The_Kirk.jpg",
+      "title": "St Andrews Church - The Kirk.jpg",
+      "author": "This Image was created by User:PlaneMad.\nIf you are using the image under the creative commons share alike license please credit the photo CC-by-sa PlaneMad/Wikimedia and include a link to this page. No explicit permission is needed from me, but id appreciate an email if my work has been of help to you.; \nIf you dont want to release your work under a creative commons license, please mail me at arun.planemad@gmail.com or catch me at my Website to negotiate a custom license as per your needs.;",
+      "credit": "Own work",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+    }
+  }
+]

@@ -6,6 +6,7 @@ import {pixelIcon} from '../lib/pixel-icons';
 import {mysteryIds,type Visit} from '../lib/adventures';
 import {visitedPlaceIds} from '../lib/exploration';
 import ExplorationMist from './ExplorationMist';
+import type {CommonsPhoto} from '../lib/photos';
 import {groupMarkers,nearestWorldLongitude} from '../lib/marker-groups';
 import {mapPlaceFromFeature,normalizeLongitude,type Place} from '../lib/places';
 function paintMarker(element:HTMLElement,category:string,pixel:boolean,mystery:boolean,fallback:string){
@@ -13,7 +14,7 @@ function paintMarker(element:HTMLElement,category:string,pixel:boolean,mystery:b
  const icon=document.createElement('img');icon.src=pixelIcon(category,mystery);icon.alt='';icon.width=24;icon.height=24;icon.setAttribute('aria-hidden','true');icon.className='pixel-sprite';icon.onerror=()=>{element.textContent=fallback};element.append(icon);
 }
 export type Destination={name:string;lat:number;lon:number};
-export default function WorldMap({destination,onError,places,onSelect,onGroup,pixel,onVisiblePlaces,mystery,revealed,flat,dark,onViewportChange,mist,visits}:{destination:Destination;onError:(message:string)=>void;places:Place[];onSelect:(place:Place)=>void;onGroup:(places:Place[])=>void;pixel:boolean;mist:boolean;visits:Visit[];flat:boolean;dark:boolean;onViewportChange:(center:Destination)=>void;mystery:boolean;revealed:string[];onVisiblePlaces:(places:Place[])=>void}){
+export default function WorldMap({destination,onError,places,photos,onSelect,onGroup,pixel,onVisiblePlaces,mystery,revealed,flat,dark,onViewportChange,mist,visits}:{destination:Destination;onError:(message:string)=>void;places:Place[];photos:Record<string,CommonsPhoto>;onSelect:(place:Place)=>void;onGroup:(places:Place[])=>void;pixel:boolean;mist:boolean;visits:Visit[];flat:boolean;dark:boolean;onViewportChange:(center:Destination)=>void;mystery:boolean;revealed:string[];onVisiblePlaces:(places:Place[])=>void}){
  const [attempt,setAttempt]=useState(0);const [status,setStatus]=useState<'loading'|'ready'|'error'>('loading');
  const settings=useRef({dark,flat,pixel});settings.current={dark,flat,pixel};
  const container=useRef<HTMLDivElement>(null); const map=useRef<maplibregl.Map|null>(null);const marker=useRef<maplibregl.Marker|null>(null);
@@ -30,22 +31,23 @@ export default function WorldMap({destination,onError,places,onSelect,onGroup,pi
   let pins:maplibregl.Marker[]=[];
   const render=()=>{
    pins.forEach(pin=>pin.remove());
-   const groups=groupMarkers(places,p=>m.project([nearestWorldLongitude(p.lon,m.getCenter().lng),p.lat]),m.getContainer().clientWidth,m.getContainer().clientHeight);
+   const groups=groupMarkers([...places].sort((a,b)=>Number(!!photos[b.id])-Number(!!photos[a.id])),p=>m.project([nearestWorldLongitude(p.lon,m.getCenter().lng),p.lat]),m.getContainer().clientWidth,m.getContainer().clientHeight,Object.keys(photos).length?82:52);
    pins=groups.map(group=>{
     const p=group.anchor,multiple=group.places.length>1,el=document.createElement('button');
     el.className='place-pin nature-pin '+(pixel?'pixel-pin ':'')+(multiple?'group-pin':'');
     paintMarker(el,p.category,pixel,!multiple&&hidden.has(p.id),multiple?String(group.places.length):hidden.has(p.id)?'?':icons[p.category]||'✦');
     if(multiple)el.textContent=String(group.places.length);
+    if(!hidden.has(p.id)&&photos[p.id]){const photo=photos[p.id];el.replaceChildren();el.classList.add('photo-map-pin');const img=document.createElement('img');img.src=photo.src;img.alt='';img.referrerPolicy='no-referrer';img.onerror=()=>{el.classList.remove('photo-map-pin');paintMarker(el,p.category,pixel,false,icons[p.category]||'✦')};const caption=document.createElement('span');caption.textContent=p.name;el.append(img,caption);el.title=`${p.name} — Photo: ${photo.author} (${photo.license}); credits in nearby cards`;}
     if(!multiple&&hidden.has(p.id))el.classList.add('mystery-pin');
     if(!multiple&&visited.has(p.id))el.classList.add('visited-pin');else if(mist)el.classList.add('unvisited-pin');
     const label=multiple?`Browse ${group.places.length} nearby places`:hidden.has(p.id)?`Reveal a mystery ${p.category.toLowerCase()} place`:`${p.name}${visited.has(p.id)?' — marked visited':''}`;
-    el.setAttribute('aria-label',label);el.title=label;el.onclick=()=>multiple?onGroup(group.places):onSelect(p);
+    el.setAttribute('aria-label',label);el.title=label;el.onclick=()=>multiple&&!photos[p.id]?onGroup(group.places):onSelect(p);el.title=photos[p.id]?`${p.name} — Photo: ${photos[p.id].author} (${photos[p.id].license}); credits in nearby cards`:label;
     return new maplibregl.Marker({element:el}).setLngLat([nearestWorldLongitude(p.lon,m.getCenter().lng),p.lat]).addTo(m);
    });
   };
   render();m.on('moveend',render);m.on('resize',render);
   return()=>{m.off('moveend',render);m.off('resize',render);pins.forEach(pin=>pin.remove())};
- },[places,onSelect,onGroup,pixel,status,attempt,mystery,revealed,mist,visits]);
+ },[places,onSelect,onGroup,pixel,status,attempt,mystery,revealed,mist,visits,photos]);
 
  return <><div ref={container} className="map" data-map-status={status} aria-label="Interactive world map"/>{mist&&status==='ready'&&map.current&&<ExplorationMist key={attempt} map={map.current} visits={visits}/>}{status!=='ready'&&<div className="map-status" role="status"><strong>{status==='loading'?'Unfolding your world…':'The map hasn’t loaded'}</strong><span>{status==='loading'?'Loading map tiles. You can still search for a city.':'Check your internet connection, then retry. Search and saved places remain available.'}</span>{status==='error'&&<button onClick={()=>setAttempt(n=>n+1)}>Retry map</button>}</div>}</>;
 }

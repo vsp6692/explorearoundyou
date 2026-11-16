@@ -37,6 +37,14 @@ A temporary public test link serves the current local static export: https://nut
 
 The existing Sites project still returns NOT_FOUND and its last ChatGPT URL returns HTTP 404. Restoring that Site/account connection or configuring permanent hosting is still needed.
 
+## Latest visual discovery
+
+- Nearby real photo cards, visual result grid and licensed image pins; one-tap place selection.
+- Immediate default-Chennai area/landmark photos with full attribution; live nearby photo discovery elsewhere.
+- Simple Food choices and automatic Food/Stays search; Options hides advanced controls.
+- Automatic area refresh after panning; flat default with optional 3D.
+- Venue photo coverage is still incomplete. Unrelated photographs are never substituted.
+
 ## Latest repairs
 
 - Hidden basemap POI icons now retain their source tiles; map discoveries also handle wrapped longitudes and malformed provider records.
