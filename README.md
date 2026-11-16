@@ -45,3 +45,11 @@ Set `NEXT_PUBLIC_MAP_STYLE` and `NEXT_PUBLIC_GEOCODER_URL` at build time to repl
 `npm run build` validates TypeScript and generates the static export. Browser visual QA and real-device geolocation still require manual validation. Check keyboard search/result selection, permission denial, mobile layout, theme switching, blocked network behavior and map navigation before public launch.
 
 Contributions welcome. Keep dependencies minimal, preserve attribution and make each level independently usable.
+
+## Reliable local preview
+
+Run `npm run build` followed by `npm run preview` to serve the exact static export on port 3001. This avoids a development-runtime hydration issue observed with the currently installed Next/Turbopack version. Do not run a build against the same output while a development server is active. `PORT=3002 npm run preview` uses an alternate port.
+
+Discovery now defaults to the VK Maps global Overpass instance (`https://maps.mail.ru/osm/tools/overpass/api/interpreter`), which returned real Chennai results during verification. This provider receives the coordinates and categories of explicit discovery requests. Override with `NEXT_PUBLIC_OVERPASS_URL` at build time. Public provider availability is still external to the app.
+
+If Overpass is unavailable, discovery can use named places already visible in the loaded map (also available through “Explore visible map places”). This is a limited viewport result set, not an exhaustive radius search. Zoom in to see more labels. Categories are inferred from map tags; map-derived entries link to their coordinates rather than an invented OSM object ID. The initial zoom is 14 to expose useful nearby labels.

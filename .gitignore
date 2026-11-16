@@ -6,3 +6,4 @@ out/
 public/maplibre-gl-worker.mjs
 public/maplibre-LICENSE.txt
 .test-output/
+lib/*.js

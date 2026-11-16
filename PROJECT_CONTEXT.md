@@ -168,3 +168,23 @@ The folder's Git repository was prepared/pushed by Sites tooling. Preserve its c
 8. Only after acceptance, refine real MapLibre Pixel styling and consider deferred game features.
 
 Do not say “fully done” until the user can actually perform the main exploration journey on their phone.
+
+## Latest restart and repair pass
+
+The user requested restarting the app because many things remain open or broken. Local dev was restarted from the standalone root on port 3001. Removed the tracked generated `lib/places.js` duplicate and ignored future emitted JS under `lib`. Added map loading/error state, explicit Retry map, a load timeout, container resize handling and retry cleanup. Discovery now surfaces upstream HTTP status or timeout rather than a generic message. These changes are local and not yet published.
+
+Validation: regression tests and static production build passed; local app and worker returned HTTP 200. OpenFreeMap style and Nominatim Chennai query returned 200. A GET request to the default Overpass service still returned HTML HTTP 406. An alternate `overpass.private.coffee` request timed out after 25 seconds; no automatic fallback was added. Live nearby discovery and actual mobile rendering remain unverified. The user was asked which current symptom is most prominent; do not treat service failures as resolved by the improved error UI.
+
+## Blank map: CSS sizing conflict found
+
+The user confirmed that the current main failure is a blank/unloaded map. `app/layout.tsx` imports MapLibre's stylesheet after the application stylesheet. MapLibre sets `.maplibregl-map { position: relative }`, overriding the application's equally specific `.map { position: absolute }`. With no explicit height, the map container can collapse. Added `.canvas > .map.maplibregl-map { position:absolute; inset:0; width:100%; height:100%; min-height:0 }` so vendor load order cannot override sizing. Production build passed. Browser verification was blocked: T3 snapshot/evaluate timed out after 15 seconds, and alternate native Chrome inspection timed out after 30 seconds. Actual rendered/mobile result still needs confirmation. Changes are local, not yet deployed to the public Site.
+
+## Phases 1–2 repair and validation (2026-11-16)
+
+The static production export was browser-tested at 390×844. It hydrates, reaches map-ready, renders thousands of geographic features, and has no horizontal overflow. Map worker/style/sprites/font requests succeeded. Submitted Chennai search returned a real result; selecting it updated the exploration center. Zoom controls changed map zoom and rendered POI counts. Light/dark switching worked. Geolocation success/denial paths were verified with simulated coordinates, not actual device GPS permissions. Cancellation was tested against a simulated stalled request and restored enabled controls.
+
+The default Overpass service is now VK Maps (`https://maps.mail.ru/osm/tools/overpass/api/interpreter`), whose small live Chennai café query returned three real OSM objects and permissive CORS. Full queries encountered upstream capacity failures/504s. Private.coffee timed out. Thus dependable exhaustive Overpass discovery remains an external limitation; do not claim every phase-2 network query passed. The client has a 45-second cap and explicit Cancel.
+
+A clearly labeled fallback extracts real named POIs from the currently rendered map, filters by category and straight-line distance, and links map-only entries by coordinates instead of fabricating OSM IDs. It can be requested directly using “Explore visible map places” or used after an Overpass failure. It is viewport-limited, excludes transport/medical/education labels and infers categories from map tags. Initial camera zoom is 14 so POI labels are available. Real map-derived pins and pin detail selection were exercised in the browser. This is a useful resilient MVP, not an exhaustive nearby directory.
+
+The installed Next/Turbopack dev runtime stalled before hydration; the same production export worked. Use `npm run build && npm run preview` to run on port 3001. Do not describe the development-runtime issue as fixed. `scripts/serve.mjs` uses only Node built-ins and serves the static export. Automated snapshots still timed out, but browser DOM/actions/network diagnostics worked. Real-phone permission prompts, visual screenshot QA and larger public traffic remain unverified.
