@@ -1,0 +1,30 @@
+const assert=require('node:assert/strict');
+const {commonsTitle,parseCommonsPhoto,loadCommonsPhoto}=require('../.test-output/photos.js');
+const {placeShareUrl,readSharedPlace}=require('../.test-output/sharing.js');
+const {readBookmarks}=require('../.test-output/bookmarks.js');
+const place={id:'node/42',name:'A & B café',lat:13.0827,lon:80.2707,category:'Food',kind:'cafe',distance:0};
+const url=new URL(placeShareUrl('https://example.org/?code=private#token',place));
+assert.equal(url.origin,'https://example.org');assert.equal(url.hash,'');assert.equal(url.searchParams.has('code'),false);
+const shared=readSharedPlace(url.search);assert.equal(shared.name,place.name);assert.equal(shared.lat,place.lat);assert.equal(shared.category,'Food');
+for(const search of ['','?place=A&lat=&lon=5','?place=A&lat=91&lon=1','?place=A&lat=1&lon=-181','?place=A&lat=Infinity&lon=0'])assert.equal(readSharedPlace(search),null);
+assert.equal(readSharedPlace('?place=A&lat=0&lon=0&category=unsupported').category,'Attractions');
+assert.equal(commonsTitle('Category:Food'),undefined);assert.equal(commonsTitle('File:a.jpg|File:b.jpg'),undefined);
+assert.equal(commonsTitle('https://evil.example/wiki/File:Image.jpg'),undefined);
+assert.equal(commonsTitle('https://commons.wikimedia.org/wiki/File:Park_view.jpg'),'File:Park view.jpg');
+const fixture={query:{pages:[{title:'File:Park.jpg',imageinfo:[{thumburl:'https://upload.wikimedia.org/wikipedia/commons/thumb/test.jpg',descriptionurl:'https://commons.wikimedia.org/wiki/File:Park.jpg',mime:'image/jpeg',extmetadata:{LicenseShortName:{value:'CC BY-SA 4.0'},LicenseUrl:{value:'https://creativecommons.org/licenses/by-sa/4.0/'},Artist:{value:'<a href="https://example.com">A Photographer</a>'},Credit:{value:'Own work'}}}]}]}};
+assert.equal(parseCommonsPhoto(fixture).author,'A Photographer');
+assert.equal(parseCommonsPhoto(fixture).license,'CC BY-SA 4.0');
+const thumbnail=structuredClone(fixture);thumbnail.query.pages[0].imageinfo[0].thumburl='https://thumb.wikimedia.org/wikipedia/commons/test.jpg';assert.ok(parseCommonsPhoto(thumbnail));
+for(const license of ['Unknown','CC BY-NC 4.0','CC BY-ND 4.0','Public domain']){const copy=structuredClone(fixture);copy.query.pages[0].imageinfo[0].extmetadata.LicenseShortName.value=license;assert.equal(parseCommonsPhoto(copy),undefined)}
+const unsafe=structuredClone(fixture);unsafe.query.pages[0].imageinfo[0].thumburl='https://evil.example/photo.jpg';assert.equal(parseCommonsPhoto(unsafe),undefined);
+const missing=structuredClone(fixture);delete missing.query.pages[0].imageinfo[0].extmetadata.Artist;assert.equal(parseCommonsPhoto(missing),undefined);
+const conflicting=structuredClone(fixture);conflicting.query.pages[0].imageinfo[0].extmetadata.LicenseUrl.value='https://creativecommons.org/licenses/by-nc/4.0/';assert.equal(parseCommonsPhoto(conflicting),undefined);
+const saved=readBookmarks(JSON.stringify([place,place,{...place,id:'invalid',lat:200},{...place,id:'metadata',description:{bad:true},website:'javascript:alert(1)'}]));
+assert.equal(saved.length,2);assert.equal(saved[1].description,undefined);assert.equal(saved[1].website,undefined);assert.deepEqual(readBookmarks('invalid'),[]);
+(async()=>{
+ let calls=0;global.fetch=async(url,opts)=>{calls++;assert.equal(new URL(url).hostname,'commons.wikimedia.org');assert.equal(opts.signal.aborted,false);return {ok:true,json:async()=>fixture}};
+ await loadCommonsPhoto('File:Park.jpg',new AbortController().signal);await loadCommonsPhoto('File:Park.jpg',new AbortController().signal);assert.equal(calls,1);
+ const aborted=new AbortController();aborted.abort();await assert.rejects(()=>loadCommonsPhoto('File:Park.jpg',aborted.signal));
+ global.fetch=async()=>({ok:false});await assert.rejects(()=>loadCommonsPhoto('File:Missing.jpg',new AbortController().signal));
+ console.log('PASS: safe share round-trip, malformed bookmarks, photo attribution/URL/license validation, cache and network failure');
+})().catch(e=>{console.error(e);process.exitCode=1});

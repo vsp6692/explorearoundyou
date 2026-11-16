@@ -85,3 +85,13 @@ Pins now appear automatically from loaded map data, and category/radius changes 
 Nature Explorer uses a 48° camera tilt, real mapped building extrusions, green land and teal water. Light/dark colours are applied through MapLibre paint properties rather than dimming the entire canvas. Switch to 2D for a flat view. This is a styled vector map with 3D buildings, not photorealistic imagery or elevation terrain. Up to 60 pins are rendered to reduce clutter; the full discovery list remains available. Pixel controls remain optional.
 
 Existing Supabase installations must apply `supabase/migrations/002_profile_interests.sql`; new projects can use the updated `schema.sql`. Tests validate interest filtering/ranking, allowed private profile interests, and style-spec validity against both a fixture and the live Liberty style. Production build passed. New mobile/browser visual acceptance is still required.
+
+## Place photos, sharing and mobile controls
+
+Place cards can load Wikimedia Commons photos referenced by OSM's `wikimedia_commons=File:...` or a supported Commons `image` URL. Loading is opt-in, with a 12-second timeout and bounded in-memory cache. The app requests metadata first and displays only supported CC BY, CC BY-SA or CC0 files with attribution. It shows the file title, creator, credit, source and license links. Unsupported licenses, missing attribution, unknown image hosts or failed requests produce an explanation rather than a guessed picture. Photos are not searched by place name; map-tile discoveries often have no photo reference.
+
+“Share this place” opens native sharing where available, otherwise copies a clean URL or provides a selectable link. Links include the selected place's name/category/coordinates; they exclude account tokens, profile interests, saved history and automatic GPS. Shared labels come from the sender and are explicitly described as such. The receiving page validates coordinates, moves the map and opens a place card.
+
+Explore/Surprise actions now sit above the optional controls; mood, journal and mystery controls are under More ways to explore. Opened panels receive keyboard focus and restore the previous connected control when closed. Malformed saved places are discarded safely. Mobile visual/assistive-technology acceptance remains pending.
+
+Current remaining work is maintained in [ROADMAP.md](ROADMAP.md).
