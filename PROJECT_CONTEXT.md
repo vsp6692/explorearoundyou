@@ -2,6 +2,12 @@
 
 Last updated: 2026-11-16 (Asia/Kolkata).
 
+## Current scope — read this before the historical handoff
+
+The latest user explicitly requested **optional Google and Facebook sign-in**, profiles and saved search history/preferences, and selected **prepare a Supabase setup** because no auth/database project exists yet. This supersedes the original no-accounts constraint; keep guest exploration available. The older phase statuses below are historical; later sections record repairs and added features.
+
+The account code is prepared but **not connected or OAuth-verified**. `docs/AUTH_SETUP.md`, `.env.example`, `supabase/schema.sql` and `tests/auth-schema.*` contain deployment and validation steps. No secrets or fake provider IDs are present. Two browser-public build variables activate the client only after a real project is supplied. Google/Facebook provider secrets belong in Supabase, not the repository. Do not claim active social login until both providers have been configured and tested.
+
 ## Read this first
 
 **This project is not accepted as working or finished.** The user's latest feedback is: “I dont see its working as expected.” The immediate request is to preserve full context inside this folder so the project can be moved independently to `/Users/satheesh/Work/explorearoundyou`.
@@ -206,3 +212,11 @@ Added `lib/adventures.ts`, `components/JourneyPanel.tsx` and `tests/adventures.c
 Manual visit toggles persist minimal place records locally under `explorearoundyou-visits`. Five badges: First Footstep, Beach Hunter, Café Hopper, Nature Explorer and Curious Explorer. There is no actual-visit or GPS verification. Reset requires two UI clicks and preserves bookmarks. Data validation rejects malformed records; duplicate IDs or equal names within 50 m merge. Mystery mode hides up to three stable result pins and reveals them on selection; no visit is recorded automatically. Reveals remain session-local.
 
 All automated tests and static builds passed. New journal/mystery UI has not had real-device or browser interaction QA in this pass. Remaining: licensed photos, genuine pixel map styling, evidence-backed hidden-gem suggestions, optional fog-of-war, complete interaction/accessibility testing and ongoing public Overpass reliability. Do not declare the entire product complete.
+
+## Optional accounts and history implementation (2026-11-16)
+
+Added `lib/account.ts` (lazy Supabase client/PKCE), `components/useAccount.ts`, profile UI and an always-available guest fallback. Profile loading is isolated across users; same-user token refresh preserves loaded state. Transient profile errors expose Retry. Fixed switching from Profile to Saved/Journal/Discoveries. The database stores an editable display name and history consent, initially false. Only future submitted city/place searches and normalized discovery category/radius terms are recorded while consent is on. No automatic GPS history, background tracking, previous-search upload or social-graph access. Interests are simple explicit-category counts. Saved places and badges remain local.
+
+SQL enforces per-user read/write/delete access, no anonymous table access, consent-checked writes, query/category validation, max 100 entries, 90-day visibility and pruning on writes. A daily SQL cron job is required to physically purge inactive expired records; documented. History deletion has confirmation and is available even when no recent rows are visible. Full Auth-identity self-service deletion remains unimplemented; operator deletion instructions are in setup.
+
+Validation: `npm test` and production export passed. SQL authorization checks passed using a disposable PostgreSQL WASM engine (PGlite installed under `/private/tmp`, not a project dependency), covering two users, anonymous access, consent off/on/revocation, direct-write denial, bounds, expired records and deletion isolation. Native local PostgreSQL startup failed due to this Mac's shared-memory limit; no running database or system configuration was changed. `tests/auth-schema.mjs --pglite <module-path>` is the supported alternative. Real Supabase/OAuth, new account UI and physical-mobile QA have not run. Existing external map/geocoding/Overpass availability limitations remain.
