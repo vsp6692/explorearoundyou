@@ -7,6 +7,18 @@ do $$begin
  if exists(select from public.explorer_searches) then raise exception 'Default consent must be off'; end if;
 end$$;
 update public.explorer_profiles set display_name='Explorer A',history_enabled=true where id=auth.uid();
+update public.explorer_profiles set interests=array['Food','Fun','Stays'] where id=auth.uid();
+do $$begin
+ if (select interests from public.explorer_profiles)<>array['Food','Fun','Stays'] then raise exception 'Interests not saved'; end if;
+ begin
+  update public.explorer_profiles set interests=array['Unsupported'] where id=auth.uid();
+  raise exception 'Unsupported interest accepted';
+ exception when check_violation then null; end;
+ begin
+  update public.explorer_profiles set interests=array[null]::text[] where id=auth.uid();
+  raise exception 'Null interest accepted';
+ exception when check_violation then null; end;
+end$$;
 select public.record_explorer_search('Cafés within 3 km','Food');
 select set_config('request.jwt.claim.sub','00000000-0000-0000-0000-000000000002',false);
 do $$begin
@@ -17,6 +29,7 @@ do $$begin
  exception when insufficient_privilege then null; end;
 end$$;
 update public.explorer_profiles set display_name='Attacker';
+update public.explorer_profiles set interests=array['Shopping'];
 delete from public.explorer_searches;
 insert into public.explorer_profiles(id,history_enabled) values(auth.uid(),true);
 do $$begin
@@ -30,6 +43,7 @@ select set_config('request.jwt.claim.sub','00000000-0000-0000-0000-000000000001'
 do $$begin
  if (select count(*) from public.explorer_searches)<>1 then raise exception 'Cross-user deletion'; end if;
  if (select display_name from public.explorer_profiles)<>'Explorer A' then raise exception 'Cross-user update'; end if;
+ if (select interests from public.explorer_profiles)<>array['Food','Fun','Stays'] then raise exception 'Cross-user interests update'; end if;
  for n in 1..110 loop perform public.record_explorer_search('Search '||n,'Food'); end loop;
  if (select count(*) from public.explorer_searches)<>100 then raise exception 'History cap failed'; end if;
  begin

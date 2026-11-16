@@ -3,7 +3,11 @@ begin;
 create table public.explorer_profiles (
  id uuid primary key references auth.users(id) on delete cascade,
  display_name text not null default 'Explorer' check (char_length(display_name) between 1 and 60),
- history_enabled boolean not null default false
+ history_enabled boolean not null default false,
+ interests text[] not null default '{}' constraint explorer_profiles_interests_check check (
+  cardinality(interests)<=7 and array_position(interests,null) is null and
+  interests <@ array['Food','Stays','Beaches','Parks','Attractions','Shopping','Fun']::text[]
+ )
 );
 create table public.explorer_searches (
  id uuid primary key default gen_random_uuid(),

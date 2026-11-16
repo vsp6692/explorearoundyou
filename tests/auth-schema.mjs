@@ -13,6 +13,8 @@ const sql=`
  grant execute on function auth.uid() to anon,authenticated;
  insert into auth.users values ('00000000-0000-0000-0000-000000000001'),('00000000-0000-0000-0000-000000000002');
  ${readFileSync(new URL('../supabase/schema.sql',import.meta.url),'utf8')}
+ ${readFileSync(new URL('../supabase/migrations/002_profile_interests.sql',import.meta.url),'utf8')}
+ ${readFileSync(new URL('../supabase/migrations/002_profile_interests.sql',import.meta.url),'utf8')}
  ${readFileSync(new URL('./auth-schema.sql',import.meta.url),'utf8')}
  `;
 if(process.argv[2]==='--pglite'){

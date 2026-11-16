@@ -8,6 +8,8 @@ Create a Supabase project in your own account. Apply `supabase/schema.sql` once 
 
 Set Auth's Site URL to `https://explorearoundyou.lyric-6185.chatgpt.site/`. Add that exact URL and `http://localhost:3001/` to the redirect allowlist. Add other local ports only when used. The static client returns to `/`; Supabase handles the provider callback and the SDK exchanges the PKCE code in the original browser.
 
+Existing installations: apply `supabase/migrations/002_profile_interests.sql` to add the validated interests array. New `schema.sql` installations already include it. Interests are chosen explicitly and saved independently of history consent. Guest interests remain in browser storage; signing in does not upload them.
+
 ## 2. Enable both providers
 
 - Google: create an OAuth web application, copy the callback URL shown in Supabase's Google provider settings into Google's authorized redirect URIs, then put the client ID and secret into Supabase. Enable Google. Configure consent/testing users before testing, and complete Google's release requirements before opening login to the public. [Official guide](https://supabase.com/docs/guides/auth/social-sign-in/auth-google).

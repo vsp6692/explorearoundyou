@@ -1,0 +1,18 @@
+const assert=require('node:assert/strict');
+const {cleanInterests,readInterests,selectDiscoveries}=require('../.test-output/interests.js');
+assert.deepEqual(cleanInterests(['Food','Food','Fun','unknown',null]),['Food','Fun']);
+assert.deepEqual(readInterests('{broken'),[]);
+assert.deepEqual(readInterests('{"Food":true}'),[]);
+const place=(id,category,lat,kind='place')=>({id,name:id,lat,lon:80,category,kind,distance:999});
+const list=[place('park','Parks',13.001),place('restaurant','Food',13.004,'restaurant'),place('cafe','Food',13.003,'cafe'),place('far','Food',14),place('stay','Stays',13.002)];
+const center={lat:13,lon:80};
+const select=(category='Everything',interests=[],only=false,intent=null)=>selectDiscoveries(list,center,1,category,intent,interests,only);
+assert.deepEqual(select().map(p=>p.id),['park','stay','cafe','restaurant']);
+assert.deepEqual(select('Everything',['Food']).map(p=>p.id),['cafe','restaurant','park','stay']);
+assert.deepEqual(select('Everything',['Food'],true).map(p=>p.id),['cafe','restaurant']);
+assert.deepEqual(select('Parks',['Food']).map(p=>p.id),['park']);
+assert.deepEqual(select('Food',['Food'],false,{kind:'cafe'}).map(p=>p.id),['cafe']);
+assert.equal(select('Everything',[],true).length,0);
+assert.ok(select()[0].distance<1);
+assert.equal(list[0].distance,999);
+console.log('PASS: chosen interests, safe local restore, preferred ranking, distance/category/subtype filters');

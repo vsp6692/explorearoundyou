@@ -75,3 +75,13 @@ Optional mystery mode replaces up to three selected result pins with question ma
 The account integration is prepared with Supabase; no cloud project/provider credentials are configured yet. Guests can continue exploring. Once connected, the profile panel offers Google/Facebook login, an editable display name, opt-in future search history, category-interest counts and deletion controls. Search history is isolated by account with database row-level security. Bookmarks and badges remain browser-local.
 
 Follow [the setup guide](docs/AUTH_SETUP.md) to provision Supabase, apply the SQL schema, configure OAuth callbacks, set the two public build variables and schedule retention cleanup. Do not put OAuth secrets or service-role keys into the frontend. Live-provider login, mobile account UI and cross-device behavior still need verification after configuration.
+
+## Interests, immediate exploration and Nature 3D
+
+Open Profile to choose Food, Fun, Stays, Beaches, Parks, Attractions and Shopping. Guest preferences save locally under `explorearoundyou-interests`. Connected accounts store explicit interests separately from history consent; guest interests are not silently uploaded. Matching categories rank first (distance breaks ties), show a star and can be isolated with “For you.” Surprise Me favours those interests when exploring Everything.
+
+Pins now appear automatically from loaded map data, and category/radius changes refresh them. Explore nearby opens these discoveries immediately; it no longer waits on Overpass. “Search wider area · online” explicitly requests Overpass with a 20-second cap. Existing map results remain usable and Explore nearby can cancel that request. After dragging, use “Explore this area” to move the discovery centre. City search is labelled Find place; choose a result to move there. Map coverage remains limited to the visible loaded tiles.
+
+Nature Explorer uses a 48° camera tilt, real mapped building extrusions, green land and teal water. Light/dark colours are applied through MapLibre paint properties rather than dimming the entire canvas. Switch to 2D for a flat view. This is a styled vector map with 3D buildings, not photorealistic imagery or elevation terrain. Up to 60 pins are rendered to reduce clutter; the full discovery list remains available. Pixel controls remain optional.
+
+Existing Supabase installations must apply `supabase/migrations/002_profile_interests.sql`; new projects can use the updated `schema.sql`. Tests validate interest filtering/ranking, allowed private profile interests, and style-spec validity against both a fixture and the live Liberty style. Production build passed. New mobile/browser visual acceptance is still required.
