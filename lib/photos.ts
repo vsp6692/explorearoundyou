@@ -24,13 +24,14 @@ export function parseCommonsPhoto(payload:unknown):CommonsPhoto|undefined{
  if(advertised&&advertised!==licenseUrl.replace(/\/$/,''))return;
  return {src,page:link,title:title.slice(5),author,credit,license,licenseUrl};
 }
-const cache=new Map<string,CommonsPhoto>();
-export async function loadCommonsPhoto(title:string,signal:AbortSignal):Promise<CommonsPhoto>{
+const cache=new Map<string,{at:number;photo:CommonsPhoto}>();
+export async function loadCommonsPhoto(title:string,signal:AbortSignal,refresh=false):Promise<CommonsPhoto>{
  const normalized=commonsTitle(title);if(!normalized)throw Error('No supported Wikimedia photo reference is mapped here.');
  if(signal.aborted)throw new DOMException('Aborted','AbortError');
- const cached=cache.get(normalized);if(cached)return cached;
+ const cached=cache.get(normalized);if(!refresh&&cached&&Date.now()-cached.at<900000)return cached.photo;
  const url=new URL('https://commons.wikimedia.org/w/api.php');url.search=new URLSearchParams({action:'query',format:'json',formatversion:'2',origin:'*',prop:'imageinfo',titles:normalized,iiprop:'url|mime|extmetadata',iiurlwidth:'640'}).toString();
  const response=await fetch(url,{signal});if(!response.ok)throw Error('Wikimedia is unavailable. Try again later.');
  const photo=parseCommonsPhoto(await response.json());if(!photo)throw Error('A supported photo with complete attribution is not available.');
- cache.set(normalized,photo);if(cache.size>30)cache.delete(cache.keys().next().value!);return photo;
+ if(signal.aborted)throw new DOMException('Aborted','AbortError');
+ cache.set(normalized,{at:Date.now(),photo});if(cache.size>30)cache.delete(cache.keys().next().value!);return photo;
 }

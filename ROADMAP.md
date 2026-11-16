@@ -22,9 +22,20 @@ Updated 2026-11-16. Builds and automated tests do not establish real-phone accep
 3. Verify saved places/interests/visits after reload, keyboard navigation, screen-reader announcements and location permission allow/deny. Check mist alignment while panning/tilting, on/off persistence and undo/reset clearing reveals.
 4. Check the deployed origin under slow/offline conditions. External tiles/geocoding/Overpass/Commons can fail independently.
 
-## Publication blocker
+## Public testing and permanent hosting
 
-The existing Sites project returns NOT_FOUND and its last public URL returns HTTP 404. These newest changes are local until hosting access is restored; no replacement public URL is available.
+A temporary public test link serves the current local static export: https://learners-individuals-easier-study.trycloudflare.com. It requires this Mac, the app server on port 3002 and the cloudflared process to remain running. It is not permanent hosting.
+
+The existing Sites project still returns NOT_FOUND and its last ChatGPT URL returns HTTP 404. Restoring that Site/account connection or configuring permanent hosting is still needed.
+
+## Latest repairs
+
+- Hidden basemap POI icons now retain their source tiles; map discoveries also handle wrapped longitudes and malformed provider records.
+- Empty/failed wider searches preserve loaded discoveries. Richer results remain usable when changing filters; recovery buttons and cancellation stay available in the mobile result panel.
+- Selected-place/photo caches expire, retries refresh metadata, explicit OSM/Wikidata associations can bypass the geocoder, and queued geocoder cancellation settles promptly.
+- Location search validates provider rows, offers Cancel and closes pending detail lookups before queueing a city search.
+
+Automated regression checks and static build pass. Real-phone rendering and interaction acceptance remain pending.
 
 ## Requires external configuration
 

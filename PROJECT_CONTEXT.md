@@ -273,3 +273,16 @@ All regression tests and production export passed during implementation; actual 
 Hosting blocker: Sites get_site for the existing manifest project returns NOT_FOUND, and the previous public URL https://explorearoundyou.lyric-6185.chatgpt.site now returns HTTP 404. No new Site was created and no URL change/deployment is claimed. Restore access to this existing Site or explicitly resolve its deletion/account ownership before publication. Local Codex CLI reports ChatGPT login for Satheesh V / vsp6692@gmail.com; this does not prove which account the Sites connector uses.
 
 Follow-up live check using an identifying app User-Agent completed the full Taj Connemara lookup: exact OSM way 217645028, Wikidata Q7676703 description and linked Commons filename, with accepted CC BY 2.0 photo metadata. This validates the association pipeline against real responses, not the browser/device rendering. Bookmarks retain only validated OSM/Wikidata source references.
+
+
+## Open-issue repair pass (2026-11-16)
+
+Fixed map POI discovery loading: MapLibre stops using layers whose layout visibility is none. Duplicate icons/text are now hidden with paint opacity instead, retaining tile-source usage. The map parser preserves real optional tags, validates coordinates/types, classifies exact categories, and normalizes wrapped-world longitudes for APIs and visible marker projection. Overpass parsing isolates malformed entries/metadata, handles unreadable JSON/abort, deduplicates IDs and retains the explicitly queried category for dual hotel/restaurant objects.
+
+Explorer keeps a bounded richer result pool while filters change and merges real map labels with network records, preserving loaded map results after online errors/empty responses. There are actionable empty states and an online Cancel control inside the result panel (the kit is hidden on mobile when that panel opens). Grouped lists are cleared before new searches. Submitted location search validates rows/bounds and has cancellation; closing pending details before searching releases their queued geocoder work.
+
+Details/photo retries bypass caches, which now expire (partial details after one minute, full metadata after fifteen). Explicit OSM/Wikidata results use linked metadata directly rather than requiring Nominatim first. Match checks cover all categories. Queue cancellation settles promptly and skips aborted queued calls; repeated queued lookups reuse fresh data. Supported preferred Wikidata images take precedence. Missing detail fields offer Check for more details.
+
+New regression files: tests/discovery-map.cjs, tests/discovery-pool.cjs, tests/detail-repair.cjs. All existing/new suites and static builds passed. No browser/real-phone acceptance is claimed. No added dependency. OAuth/Supabase setup and permanent hosting remain open; external discovery can still be slow or unavailable.
+
+Public test tunnel: https://learners-individuals-easier-study.trycloudflare.com -> local static server port 3002. Public app and worker returned HTTP 200 after rebuilding. This is temporary and requires the Mac/server/cloudflared process to stay running. Current cloudflared binary is /private/tmp/explore-public-tools/cloudflared; the tunnel process was launched via the tool session, not installed as a login service. Existing Sites identity is preserved; no replacement Site was created.

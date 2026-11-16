@@ -1,0 +1,45 @@
+const assert=require('node:assert/strict');
+const {matchPlaceRecord,loadPlaceDetails,linkedWikiDetails}=require('../.test-output/place-details.js');
+const {geocodeJson}=require('../.test-output/geocoding.js');
+const {loadCommonsPhoto}=require('../.test-output/photos.js');
+const hotel={id:'way/80',name:'Example Hotel',lat:13,lon:80,category:'Stays',kind:'hotel',distance:2,wikidata:'Q80'};
+const wiki=id=>({entities:{[id]:{descriptions:{en:{value:'Mapped hotel'}},claims:{P18:[{rank:'normal',mainsnak:{snaktype:'value',datavalue:{value:'Example Hotel.jpg'}}}]}}}});
+const image=(thumb='https://upload.wikimedia.org/example.jpg')=>({query:{pages:[{title:'File:Example Hotel.jpg',imageinfo:[{thumburl:thumb,descriptionurl:'https://commons.wikimedia.org/wiki/File:Example_Hotel.jpg',mime:'image/jpeg',extmetadata:{Artist:{value:'Photographer'},LicenseShortName:{value:'CC BY 4.0'},LicenseUrl:{value:'https://creativecommons.org/licenses/by/4.0/'}}}]}]}});
+(async()=>{
+ let clock=100000;const originalNow=Date.now;Date.now=()=>clock+=1200;
+ try{
+  let calls=[];
+  global.fetch=async url=>{calls.push(new URL(url));assert.equal(new URL(url).hostname,'www.wikidata.org');return {ok:true,json:async()=>wiki('Q80')}};
+  const linked=await loadPlaceDetails(hotel,new AbortController().signal);
+  assert.equal(linked.photoTitle,'File:Example Hotel.jpg');assert.equal(calls.length,1,'known OSM/Wikidata link must not depend on geocoder');
+  assert.equal((await loadPlaceDetails({...hotel,distance:9},new AbortController().signal)).distance,9,'cached details preserve current distance');
+  assert.equal(calls.length,1);
+  await loadPlaceDetails(hotel,new AbortController().signal,true);assert.equal(calls.length,2,'retry bypasses detail cache');
+  clock+=900001;await loadPlaceDetails(hotel,new AbortController().signal);assert.equal(calls.length,3,'detail cache expires');
+  const park={...hotel,id:'map:park',name:'Central Park',category:'Parks'};
+  const row={name:park.name,lat:13,lon:80,osm_type:'node',osm_id:5,type:'restaurant'};
+  for(const lat of [true,false,{},'  '])assert.equal(matchPlaceRecord({...park,lat:0},[{...row,type:'park',lat}]),undefined);
+  assert.equal(matchPlaceRecord(park,[row]),undefined,'same-name restaurant must not enrich a park');
+  assert.equal(matchPlaceRecord(park,[{...row,type:'park'}]).type,'park');
+  assert.equal(matchPlaceRecord({...hotel,wikidata:undefined},[{...row,type:'restaurant',osm_type:'way',osm_id:80}]).osm_id,80,'exact OSM identity takes priority over changed classification');
+  const ranked=wiki('Q80');ranked.entities.Q80.claims.P18.push({rank:'preferred',mainsnak:{snaktype:'value',datavalue:{value:'Preferred.jpg'}}});
+  assert.equal(linkedWikiDetails(ranked,'Q80').photoTitle,'File:Preferred.jpg');
+  let photos=0;global.fetch=async()=>{photos++;return {ok:true,json:async()=>image()}};
+  await loadCommonsPhoto('File:Example Hotel.jpg',new AbortController().signal);
+  await loadCommonsPhoto('File:Example Hotel.jpg',new AbortController().signal);assert.equal(photos,1);
+  await loadCommonsPhoto('File:Example Hotel.jpg',new AbortController().signal,true);assert.equal(photos,2,'image retry refreshes thumbnail metadata');
+  clock+=900001;await loadCommonsPhoto('File:Example Hotel.jpg',new AbortController().signal);assert.equal(photos,3,'photo cache expires');
+  let release,requests=0;
+  global.fetch=async()=>{requests++;await new Promise(resolve=>release=resolve);return {ok:true,json:async()=>[]}};
+  const first=geocodeJson(new URL('https://example.org/slow'),new AbortController().signal);
+  await new Promise(resolve=>setImmediate(resolve));
+  const controller=new AbortController();const queued=geocodeJson(new URL('https://example.org/cancelled'),controller.signal);controller.abort();
+  await Promise.race([assert.rejects(queued,{name:'AbortError'}),new Promise((_,reject)=>setTimeout(()=>reject(Error('Queued cancellation did not settle immediately')),100))]);
+  release();await first;await new Promise(resolve=>setImmediate(resolve));assert.equal(requests,1,'cancelled queued lookup never fetches');
+  let cityCalls=0;global.fetch=async()=>{cityCalls++;return {ok:true,json:async()=>[{name:'City'}]}};
+  const url=new URL('https://example.org/city');
+  await Promise.all([geocodeJson(url,new AbortController().signal),geocodeJson(url,new AbortController().signal)]);assert.equal(cityCalls,1,'queued duplicates reuse fresh cache');
+  await geocodeJson(url,new AbortController().signal,true);assert.equal(cityCalls,2,'retry bypasses geocoder cache');
+  console.log('PASS: direct linked details, cache expiry/retry, strict category matching, preferred images and prompt queued cancellation');
+ }finally{Date.now=originalNow}
+})().catch(e=>{console.error(e);process.exitCode=1});

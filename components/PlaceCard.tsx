@@ -12,7 +12,7 @@ export default function PlaceCard({place,center,surprise,saved,visited,onClose,o
   const controller=new AbortController();let active=true;
   const timer=setTimeout(()=>controller.abort(),14000);
   setBusy(true);setStatus('Finding mapped details…');
-  void loadPlaceDetails(place,controller.signal).then(value=>{if(active){setDetail(value);setStatus('')}}).catch(()=>{if(active)setStatus('Extra details are unavailable right now. You can still save this place or get directions.')}).finally(()=>{clearTimeout(timer);if(active)setBusy(false)});
+  void loadPlaceDetails(place,controller.signal,retry>0).then(value=>{if(active){setDetail(value);setStatus('')}}).catch(()=>{if(active)setStatus('Extra details are unavailable right now. You can still save this place or get directions.')}).finally(()=>{clearTimeout(timer);if(active)setBusy(false)});
   return()=>{active=false;clearTimeout(timer);controller.abort()};
  },[place.id,place.lat,place.lon,retry]);
  const source=detail.osmRef||detail.id;
@@ -32,6 +32,7 @@ export default function PlaceCard({place,center,surprise,saved,visited,onClose,o
   {detail.openingHours&&<p><strong>Mapped hours</strong><br/>{detail.openingHours}<br/><small>Confirm with the venue before visiting.</small></p>}
   {safeWebsite(detail.website)&&<a className="venue-website" href={safeWebsite(detail.website)} target="_blank" rel="noreferrer">Visit official website ↗</a>}
   {status&&<div className="detail-status" role="status"><p>{status}</p>{!busy&&<button onClick={()=>setRetry(n=>n+1)}>Retry details</button>}</div>}
+  {!busy&&!status&&(!detail.description||!detail.photoTitle)&&<button className="refresh-details" onClick={()=>setRetry(n=>n+1)}>Check for more details</button>}
   <SharePlace place={detail}/>
   <button className="visit-button" aria-pressed={visited} onClick={()=>onVisit(detail)}>{visited?'✓ Marked visited · Undo':'👣 I visited this place'}</button>
   <p className="data-note">{detail.kind==='shared location'?'Shared name and location supplied by the sender.':'Community-contributed information may be incomplete or outdated.'} Prices and opening status are not verified.</p>

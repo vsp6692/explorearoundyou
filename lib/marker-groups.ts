@@ -12,3 +12,6 @@ export function groupMarkers(places:Place[],project:(p:Place)=>{x:number;y:numbe
  }
  return groups;
 }
+
+/** Project the visible world copy, including after panning across ±180°. */
+export function nearestWorldLongitude(lon:number,viewLongitude:number){return lon+360*Math.round((viewLongitude-lon)/360)}
