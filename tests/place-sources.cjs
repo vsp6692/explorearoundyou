@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict');
+const {placeSource,placeWebsite}=require('../.test-output/place-sources.js');
+const {readBookmarks}=require('../.test-output/bookmarks.js');
+const p={id:'wiki:42',name:'A place',category:'Attractions',kind:'landmark',lat:13,lon:80,distance:0,description:'Real source text',descriptionSource:'https://en.wikipedia.org/?curid=42'};
+assert.equal(readBookmarks(JSON.stringify([p]))[0].descriptionSource,p.descriptionSource);
+for(const value of ['https://en.wikipedia.org.evil.test/?curid=42','javascript:alert(1)','https://en.wikipedia.org/?curid=42&tracking=1','https://www.wikidata.org/wiki/Q1#bad','https://www.wikidata.org@evil.test/wiki/Q1'])assert.equal(placeSource(value),undefined);
+assert.equal(placeSource('https://www.wikidata.org/wiki/Q42'),'https://www.wikidata.org/wiki/Q42');
+assert.equal(placeSource('https://www.openstreetmap.org/way/42'),'https://www.openstreetmap.org/way/42');
+assert.equal(placeWebsite(p.descriptionSource).label,'Read on Wikipedia');
+assert.equal(placeWebsite('https://cafe.example').label,'Venue website (mapped)');
+console.log('PASS: source provenance survives bookmarks; encyclopedia links are not labelled venue websites');

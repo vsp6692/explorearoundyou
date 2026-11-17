@@ -15,7 +15,7 @@ export function nearbyWikiPlaces(payload:unknown,lat:number,lon:number,radius:nu
   const coord=primary[0];if(typeof coord.lat!=='number'||!Number.isFinite(coord.lat)||Math.abs(coord.lat)>90||typeof coord.lon!=='number'||!Number.isFinite(coord.lon)||Math.abs(coord.lon)>180)continue;
   const distance=distanceKm(lat,lon,coord.lat,coord.lon);if(distance>radius)continue;
   const website=`https://en.wikipedia.org/?curid=${p.pageid}`;
-  seen.add(p.pageid);found.push({id:`wiki:${p.pageid}`,name:p.title.trim(),lat:coord.lat,lon:coord.lon,category:'Attractions',kind:'nearby landmark',distance,wikidata:String(props.wikibase_item),website,description:typeof p.extract==='string'?p.extract.slice(0,600):undefined,descriptionSource:website});
+  seen.add(p.pageid);found.push({id:`wiki:${p.pageid}`,name:p.title.trim(),lat:coord.lat,lon:coord.lon,category:'Attractions',kind:'nearby landmark',distance,wikidata:String(props.wikibase_item),description:typeof p.extract==='string'?p.extract.slice(0,600):undefined,descriptionSource:website});
  }
  return found.sort((a,b)=>a.distance-b.distance).slice(0,24);
 }
