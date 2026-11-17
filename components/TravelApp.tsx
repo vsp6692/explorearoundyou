@@ -5,6 +5,7 @@ import HomeScreen from './HomeScreen';
 import TripScreens from './TripScreens';
 import AccountPanel from './AccountPanel';
 import AppIcon from './AppIcon';
+import {IconButton} from './ui';
 import {useTrips} from './useTrips';
 import {useAccount} from './useAccount';
 import {readBookmarks} from '../lib/bookmarks';
@@ -24,7 +25,7 @@ export default function TravelApp(){
  function create(){setTripId(undefined);setCreating(true);setTab('trips')}
  function openTrip(id:string){setTripId(id);setCreating(false);setTab('trips')}
  function toggleTheme(){setDark(!dark);try{localStorage.setItem('explorearoundyou-theme',dark?'light':'dark')}catch{}}
- return <div className={`travel-app ${dark?'app-dark':''} ${tab==='map'?'map-active':''}`}><header className="app-topbar"><a href="./" className="app-wordmark"><span><AppIcon name="compass" size={25}/></span>explore<span>aroundyou</span></a><span className="desktop-tagline">A little curiosity. A new adventure.</span><div><button className="round-button" onClick={toggleTheme} aria-label={dark?'Use light theme':'Use dark theme'}><AppIcon name={dark?'sun':'moon'} size={21}/></button><button className="round-button" aria-label="Open profile" onClick={()=>navigate('profile')}><AppIcon name="profile" size={21}/></button></div></header>
+ return <div className={`travel-app ${dark?'app-dark':''} ${tab==='map'?'map-active':''}`}><header className="app-topbar"><a href="./" className="app-wordmark"><span><AppIcon name="compass" size={25}/></span>explore<span>aroundyou</span></a><span className="desktop-tagline">A little curiosity. A new adventure.</span><div><IconButton icon={dark?'sun':'moon'} label={dark?'Use light theme':'Use dark theme'} onClick={toggleTheme}/><IconButton icon="profile" label="Open profile" onClick={()=>navigate('profile')}/></div></header>
  <div className="app-page-scroll" ref={heading} hidden={tab==='map'}>
  {tab==='home'&&<HomeScreen name={account.name} trips={controller.trips} saved={saved} visits={visits} onMap={()=>openMap()} onTrips={()=>{setTripId(undefined);setTripNavigation(v=>v+1);navigate('trips')}} onCreate={create} onSaved={()=>navigate('saved')} onProfile={()=>navigate('profile')} onTrip={openTrip} onCategory={c=>{setPlace(null);setCategory(c);setRequestVersion(v=>v+1);navigate('map')}}/>}
  {tab==='trips'&&<TripScreens key={`${tripId||'all'}-${tripNavigation}`} controller={controller} creating={creating} onCreated={()=>setCreating(false)} onCreate={create} onExplore={()=>openMap()} onSelectPlace={p=>openMap(p)} saved={saved} requestedTripId={tripId}/>}
