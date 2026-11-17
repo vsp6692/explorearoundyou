@@ -32,6 +32,6 @@ export function chooseSurprise(places:Place[],recent:Place[],selected?:Place|nul
 /** Explain only a recorded interest or mapped category, without quality claims. */
 export function surpriseReason(place:Place,interests:string[]=[]):string{
  if(cleanInterests(interests).includes(place.category))return `A ${place.category.toLowerCase()} discovery that matches your interests.`;
- const kind=place.kind.replaceAll('_',' ').trim();
+ const kind=place.kind.replaceAll('_',' ').trim().replace(/^nearby\s+/i,'');
  return kind&&kind!=='place'?`A nearby ${kind} to discover. Check its details before you go.`:'A nearby place to discover. Check its details before you go.';
 }

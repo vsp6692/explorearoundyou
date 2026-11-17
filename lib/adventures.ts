@@ -1,13 +1,23 @@
 import {distanceKm, type Place} from './places';
 export type AdventureMode = 'short' | 'variety' | 'family';
-export type Visit = Pick<Place,'id'|'name'|'lat'|'lon'|'category'|'kind'>;
+export type Visit = Pick<Place,'id'|'name'|'lat'|'lon'|'category'|'kind'>&{visitedAt?:string};
 const categories = new Set(['Food','Stays','Beaches','Parks','Attractions','Shopping','Fun']);
+function visitTimestamp(value:unknown):string|undefined{
+ if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/.test(value)||!Number.isFinite(Date.parse(value)))return undefined;
+ const day=value.slice(0,10);
+ if(new Date(day).toISOString().slice(0,10)!==day)return undefined;
+ return new Date(value).toISOString();
+}
 export function samePlace(a:Visit,b:Visit) {
  return a.id===b.id || (a.name.trim().toLowerCase()===b.name.trim().toLowerCase() && distanceKm(a.lat,a.lon,b.lat,b.lon)<.05);
 }
 export function readVisits(raw:string|null):Visit[] {
  try {const data=JSON.parse(raw||'[]');if(!Array.isArray(data))return [];const valid:Visit[]=[];
- for(const p of data.slice(0,2000))if(p&&typeof p.id==='string'&&typeof p.name==='string'&&typeof p.kind==='string'&&categories.has(p.category)&&Number.isFinite(p.lat)&&Math.abs(p.lat)<=90&&Number.isFinite(p.lon)&&Math.abs(p.lon)<=180&&!valid.some(v=>samePlace(v,p)))valid.push({id:p.id,name:p.name,kind:p.kind,category:p.category,lat:p.lat,lon:p.lon});return valid;
+ for(const p of data.slice(0,2000))if(p&&typeof p.id==='string'&&typeof p.name==='string'&&typeof p.kind==='string'&&categories.has(p.category)&&Number.isFinite(p.lat)&&Math.abs(p.lat)<=90&&Number.isFinite(p.lon)&&Math.abs(p.lon)<=180&&!valid.some(v=>samePlace(v,p))){
+  // Legacy marks have no recorded date; never backfill one during restoration.
+  const visitedAt=visitTimestamp(p.visitedAt);
+  valid.push({id:p.id,name:p.name,kind:p.kind,category:p.category,lat:p.lat,lon:p.lon,...(visitedAt?{visitedAt}:{})});
+ }return valid;
  }catch{return []}
 }
 /** Suggest stops from known places; this is not a pedestrian routing engine. */

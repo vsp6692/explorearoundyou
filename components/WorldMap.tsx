@@ -2,6 +2,7 @@
 import {useEffect,useRef,useState} from 'react';
 import * as maplibregl from 'maplibre-gl';
 import {applyMapTheme} from '../lib/map-theme';
+import {prepareMapStyle} from '../lib/prepare-map-style';
 import {pixelIcon} from '../lib/pixel-icons';
 import {mysteryIds,type Visit} from '../lib/adventures';
 import {visitedPlaceIds} from '../lib/exploration';
@@ -29,14 +30,10 @@ export default function WorldMap({destination,onError,places,photos,onSelect,onG
   const timer=setTimeout(()=>setStatus(s=>s==='ready'?s:'error'),20000);
   try{
    maplibregl.setWorkerUrl(new URL('/maplibre-gl-worker.mjs',location.origin).href);
-   const m=new maplibregl.Map({container:container.current,style:process.env.NEXT_PUBLIC_MAP_STYLE||'https://tiles.openfreemap.org/styles/liberty',center:[80.2707,13.0827],zoom:15,pitch:settings.current.flat?0:30,bearing:0,maxPitch:60,attributionControl:{compact:true}});
+   const m=new maplibregl.Map({container:container.current,style:process.env.NEXT_PUBLIC_MAP_STYLE||'https://tiles.openfreemap.org/styles/liberty',transformStyle:(_previous,next)=>prepareMapStyle(next),center:[80.2707,13.0827],zoom:15,pitch:settings.current.flat?0:30,bearing:0,maxPitch:60,attributionControl:{compact:true}});
    instance=m;map.current=m;m.dragRotate.disable();m.touchZoomRotate.disableRotation();m.touchPitch.disable();
    m.once('load',()=>{
     clearTimeout(timer);applyMapTheme(m,settings.current.dark,settings.current.pixel);
-    for(const layer of m.getStyle().layers||[])if(layer.type==='symbol'&&'source-layer' in layer&&layer['source-layer']==='poi'){
-     // Keep POI source tiles active while our own markers provide the symbols.
-     m.setLayoutProperty(layer.id,'icon-image','');m.setPaintProperty(layer.id,'icon-opacity',0);m.setPaintProperty(layer.id,'text-opacity',0);m.setLayoutProperty(layer.id,'icon-ignore-placement',true);m.setLayoutProperty(layer.id,'text-ignore-placement',true);
-    }
     setStatus('ready');
    });
    m.on('moveend',()=>{const c=m.getCenter();onViewportChange({lat:c.lat,lon:normalizeLongitude(c.lng),name:'This map area'})});
@@ -71,7 +68,8 @@ export default function WorldMap({destination,onError,places,photos,onSelect,onG
   const visited=visitedPlaceIds(candidates,visits),hidden=new Set(mystery?mysteryIds(candidates.filter(p=>!visited.has(p.id))).filter(id=>!revealed.includes(id)):[]);
   function render(){
    const sorted=[...candidates].sort((a,b)=>Number(b.id===selectedId)-Number(a.id===selectedId)||Number(!!photos[b.id])-Number(!!photos[a.id]));
-   const groups=groupMarkers(sorted,p=>m!.project([nearestWorldLongitude(p.lon,m!.getCenter().lng),p.lat]),m!.getContainer().clientWidth,m!.getContainer().clientHeight,Object.keys(photos).length?78:52);
+   const stopIds=new Set(itinerary.map(p=>p.id));
+   const groups=[...itinerary.map(p=>({anchor:p,places:[p]})),...groupMarkers(sorted.filter(p=>!stopIds.has(p.id)),p=>m!.project([nearestWorldLongitude(p.lon,m!.getCenter().lng),p.lat]),m!.getContainer().clientWidth,m!.getContainer().clientHeight,Object.keys(photos).length?78:52)];
    const keep=new Set<string>();
    for(const group of groups){
     const p=group.anchor,key=p.id,multiple=group.places.length>1,secret=hidden.has(p.id),photo=!secret?photos[p.id]:undefined,direct=!!photo||!multiple||p.id===selectedId;

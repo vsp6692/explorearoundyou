@@ -1,5 +1,5 @@
 const assert=require('node:assert/strict');
-const {readTrips,validateTrip,tripStatus,validDate,tripDates}=require('../.test-output/trips.js');
+const {readTrips,validateTrip,tripStatus,validDate,tripDates,sanitizeStopDays,initialTripPlaces}=require('../.test-output/trips.js');
 const input={name:'  Little escape  ',destination:'Chennai',startDate:'2026-11-17',endDate:'2026-11-20',travellers:2,cover:'coast'};
 assert.equal(validateTrip(input).name,'Little escape');
 for(const change of [{name:''},{destination:''},{startDate:'2026-11-21'},{endDate:''},{startDate:'2026-02-30'},{travellers:0},{travellers:21},{travellers:1.5},{cover:'bad'}])assert.throws(()=>validateTrip({...input,...change}));
@@ -12,4 +12,28 @@ const stored=readTrips(JSON.stringify([{...trip,unrelated:'ignored',places:[plac
 assert.equal(stored[0].places.length,1);assert.equal(stored[0].memories.length,1);assert.equal(stored[0].unrelated,undefined);assert.equal(stored[0].memories[0].text,'Nice evening');
 assert.ok(tripDates(trip).length);assert.equal(tripDates({...trip,startDate:'',endDate:''}),'Dates to dream about');
 assert.equal(readTrips(JSON.stringify(Array.from({length:110},(_,i)=>({...trip,id:String(i)})))).length,100);
-console.log('PASS: trip date validation/status, local restore bounds, duplicate/corrupt records and honest counts');
+// Initial places survive the first trip record, without cross-source duplicates.
+const second={...place,id:'node/2',name:'Park',category:'Parks',kind:'park',lon:80.01};
+const firstStops=initialTripPlaces([place,{...place,id:'wiki:1'},second]);
+assert.deepEqual(firstStops.map(p=>p.id),['node/1','node/2']);
+assert.equal(initialTripPlaces([{...place,lat:200}]).length,0);
+assert.equal(initialTripPlaces().length,0);
+assert.throws(()=>initialTripPlaces(Array.from({length:101},(_,i)=>({...place,id:`node/${i}`,name:`Place ${i}`}))),/100 places/);
+assert.equal(initialTripPlaces(Array.from({length:101},(_,i)=>({...place,id:`node/${i}`}))).length,1);
+const seeded=readTrips(JSON.stringify([{...trip,places:firstStops}]))[0];
+assert.deepEqual(seeded.places.map(p=>p.id),['node/1','node/2']);
+assert.equal(seeded.stopDays,undefined); // Existing records need no migration.
+const days={'node/1':'2026-11-17','node/2':'2026-11-20','node/unknown':'2026-11-18'};
+assert.deepEqual(sanitizeStopDays(days,firstStops,input.startDate,input.endDate),{'node/1':'2026-11-17','node/2':'2026-11-20'});
+const arranged=readTrips(JSON.stringify([{...trip,places:[second,place],stopDays:days}]))[0];
+assert.deepEqual(arranged.places.map(p=>p.id),['node/2','node/1']);
+assert.deepEqual(arranged.stopDays,{'node/2':'2026-11-20','node/1':'2026-11-17'});
+const reloaded=readTrips(JSON.stringify([arranged]))[0];
+assert.deepEqual(reloaded.places,arranged.places);
+assert.deepEqual(reloaded.stopDays,arranged.stopDays);
+assert.deepEqual(sanitizeStopDays(days,[second],'2026-11-19','2026-11-20'),{'node/2':'2026-11-20'});
+assert.equal(sanitizeStopDays(days,firstStops,'',''),undefined);
+assert.equal(sanitizeStopDays(days,firstStops,'2026-11-18','2026-11-19'),undefined);
+for(const value of [[],null,'bad',{'node/1':'2026-02-30'},{'node/1':20261117},{'node/1':'2026-11-21'}])assert.equal(sanitizeStopDays(value,firstStops,input.startDate,input.endDate),undefined);
+assert.equal(readTrips(JSON.stringify([{...trip,places:[place],stopDays:{'node/1':'bad'}}]))[0].places.length,1);
+console.log('PASS: trip validation, legacy restore, atomic initial-stop data, canonical deduplication, reordered stops and optional day bounds');

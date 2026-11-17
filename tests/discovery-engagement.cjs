@@ -24,6 +24,7 @@ const original=[c,a,b];rankDiscoveries(original,{a:{}},['Food']);assert.deepEqua
 assert.match(surpriseReason(a,['Food']),/matches your interests/);
 assert.equal(surpriseReason(a,[]),'A nearby restaurant to discover. Check its details before you go.');
 assert.equal(surpriseReason({...a,kind:'place'}),'A nearby place to discover. Check its details before you go.');
+assert.equal(surpriseReason({...a,kind:'nearby landmark'}),'A nearby landmark to discover. Check its details before you go.');
 for(const id of ['all','south_indian','indian','chinese','pizza','burgers','japanese','cafe','north_indian','street_food','desserts'])assert.ok(CUISINES.some(c=>c.id===id));
 for(const [id,tag] of [['north_indian','north_indian'],['north_indian','punjabi'],['street_food','chaat'],['street_food','street_food'],['desserts','ice_cream'],['desserts','cake']]){
  assert.equal(matchesCuisine({...a,cuisine:tag},id),true);
