@@ -19,7 +19,7 @@ Actual headless Chromium checks at 390×844 and 1440×844 passed backup download
 
 ## Remaining blockers / deferred work
 
-1. **High / external:** Repository Pages source must be enabled by an administrator; target URL was 404 when checked. Verify actual workflow deployment and live map/worker/photo requests after activation.
+1. **Resolved 18 November:** Pages deployment run 44280081242 succeeded after repository activation. https://vsp6692.github.io/explorearoundyou/ and checked assets/routes return 200. Deployed mobile Chromium map renders successfully; physical-device acceptance is still pending.
 2. **High / external:** Supabase project, Google/Facebook OAuth settings, real two-account RLS tests, retention job and private identity-deletion channel remain unconfigured/unverified. Guest exploration works without them.
 3. **High / infrastructure:** Nominatim throttling is per browser, not aggregate. Public Overpass/Wikimedia/tile services can fail or limit requests; static hosting has no shared request budget or global cache. Select appropriately supported providers/proxy before significant public traffic. Coverage and photo availability remain source-dependent; no claim of exhaustive search.
 4. **High / acceptance:** Verify real GPS permission flows, map loading and image reliability over mobile networks on physical Android/iOS. Previous location-controller tests do not establish real-device accuracy.

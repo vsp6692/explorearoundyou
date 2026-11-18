@@ -19,6 +19,10 @@ assert.equal(normalizeLongitude(541),-179);assert.equal(normalizeLongitude(-541)
 assert.equal(nearestWorldLongitude(-179,181),181);assert.equal(nearestWorldLongitude(179,-181),-181);
 const wrapped={...real,lon:-179};
 assert.equal(groupMarkers([wrapped],p=>({x:nearestWorldLongitude(p.lon,181)-131,y:50}),100,100).length,1);
+// Search and loaded-map discovery must retain the same supported place kinds.
+for(const [category,kinds] of Object.entries({Food:['food_court'],Stays:['apartment','chalet','camp_site','caravan_site'],Parks:['wood','forest','heath','grassland'],Fun:['arts_centre','amusement_arcade','adventure_park','escape_game','fitness_centre','climbing'],Attractions:['gallery','memorial','ruins','archaeological_site','fort','aquarium']})){
+ for(const kind of kinds){const p=mapPlaceFromFeature(feature(kind));assert.ok(p,`Missing ${kind}`);assert.equal(p.category,category,kind)}
+}
 (async()=>{
  let called=0;
  global.fetch=async()=>{called++;return {ok:true,json:async()=>({elements:[null,{},[],{type:'node',id:'invalid',lat:13,lon:80,tags:{name:'Bad'}},{type:'node',id:9,lat:13,lon:80,tags:{name:'Working cafe',amenity:'cafe',description:{bad:true},cuisine:13}},{type:'node',id:9,lat:13,lon:80,tags:{name:'Duplicate',amenity:'cafe'}}]})}};

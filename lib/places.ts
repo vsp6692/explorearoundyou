@@ -5,7 +5,7 @@ const selectors:Record<string,string[]>={
  Food:['amenity~"^(restaurant|cafe|fast_food|ice_cream|food_court|bar|pub)$"'],
  Stays:['tourism~"^(hotel|hostel|guest_house|motel|apartment|chalet|camp_site|caravan_site)$"'],
  Beaches:['natural="beach"'],
- Parks:['leisure~"^(park|garden|nature_reserve)$"','natural~"^(wood|heath|grassland)$"','landuse="forest"'],
+ Parks:['leisure~"^(park|garden|nature_reserve|wood|forest|heath|grassland)$"','natural~"^(wood|heath|grassland)$"','landuse="forest"'],
  Attractions:['tourism~"^(attraction|museum|viewpoint|gallery|artwork|zoo|aquarium|theme_park)$"','historic~"^(monument|memorial|castle|ruins|archaeological_site|fort)$"','amenity="place_of_worship"'],
  Shopping:['shop'],
  Fun:['leisure~"^(playground|water_park|sports_centre|stadium|amusement_arcade|adventure_park|escape_game|fitness_centre)$"','amenity~"^(cinema|theatre|arts_centre)$"','sport="climbing"']
@@ -71,13 +71,13 @@ export function mapPlaceFromFeature(feature:{geometry:{type:string;coordinates:u
  const kind=String(props.subclass||props.class||'place'),group=String(props.class||''),tags=[kind,group];
  if(tags.some(tag=>/^(clinic|hospital|doctor|dentist|school|college|university|rail|station|bus|tram|subway)(_|$)/.test(tag)))return;
  let category:string;
- if(tags.some(tag=>/^(restaurant|cafe|fast_food|ice_cream|food|bar|pub)$/.test(tag)))category='Food';
- else if(tags.some(tag=>/^(hotel|hostel|lodging|guest_house|motel)$/.test(tag)))category='Stays';
+ if(tags.some(tag=>/^(restaurant|cafe|fast_food|ice_cream|food_court|food|bar|pub)$/.test(tag)))category='Food';
+ else if(tags.some(tag=>/^(hotel|hostel|lodging|guest_house|motel|apartment|chalet|camp_site|caravan_site)$/.test(tag)))category='Stays';
  else if(tags.includes('beach'))category='Beaches';
- else if(tags.some(tag=>/^(park|garden|nature_reserve)$/.test(tag)))category='Parks';
+ else if(tags.some(tag=>/^(park|garden|nature_reserve|wood|forest|heath|grassland)$/.test(tag)))category='Parks';
  else if(tags.some(tag=>/^(shop|mall|store|department_store)$/.test(tag)))category='Shopping';
- else if(tags.some(tag=>/^(playground|sport|sports_centre|stadium|cinema|theatre|theme_park|water_park)$/.test(tag)))category='Fun';
- else if(tags.some(tag=>/^(attraction|museum|artwork|monument|castle|viewpoint|zoo|town_hall|community_centre|place_of_worship)$/.test(tag)))category='Attractions';
+ else if(tags.some(tag=>/^(playground|sport|sports_centre|stadium|cinema|theatre|arts_centre|theme_park|water_park|amusement_arcade|adventure_park|escape_game|fitness_centre|climbing)$/.test(tag)))category='Fun';
+ else if(tags.some(tag=>/^(attraction|museum|gallery|artwork|monument|memorial|castle|ruins|archaeological_site|fort|viewpoint|zoo|aquarium|town_hall|community_centre|place_of_worship)$/.test(tag)))category='Attractions';
  else return;
  const text=(key:string)=>typeof props[key]==='string'?props[key] as string:undefined;
  return {id:`map:${name.trim()}:${lat.toFixed(5)}:${lon.toFixed(5)}`,name:name.trim(),lat,lon,category,kind:kind.replaceAll('_',' '),distance:0,cuisine:text('cuisine'),description:text('description')?.slice(0,600),address:text('address'),website:text('website')||text('contact:website'),openingHours:text('opening_hours'),photoTitle:commonsTitle(props.wikimedia_commons)||commonsTitle(props.image),wikidata:/^Q\d+$/.test(text('wikidata')||'')?text('wikidata'):undefined};

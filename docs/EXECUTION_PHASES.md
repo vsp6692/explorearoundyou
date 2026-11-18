@@ -2,7 +2,7 @@
 
 Updated 18 November 2026. Work through one phase at a time. Preserve guest access and existing device data. A completed build alone does not satisfy a phase.
 
-## Phase 1 — Permanent public website (in progress)
+## Phase 1 — Permanent public website (completed)
 
 - Diagnose the failed Pages workflow, activate the approved GitHub Actions publishing source and publish the verified static export.
 - Check HTTPS entrypoint, prefixed JS/CSS, MapLibre worker, manifest, bundled photos, privacy and credits routes.
@@ -11,13 +11,17 @@ Updated 18 November 2026. Work through one phase at a time. Preserve guest acces
 
 Evidence: run 44237420619 passed build, all tests and export validation, then failed in configure-pages with “Get Pages site failed / Not Found”. Public repository metadata subsequently changed to has_pages=true. Triggering a fresh run will determine whether activation resolved the failure. If settings still block deployment, repository administrator access is required; do not request passwords in chat.
 
-## Phase 2 — Reliable discovery
+Completion evidence: deployment run 44280081242 succeeded. The public entrypoint, worker, manifest, bundled photo, privacy and credits returned HTTP 200. Live headless mobile Chromium rendered 292 map features at zoom 15, with no page exceptions, failed own-host assets or horizontal overflow. Physical-device acceptance remains in Phase 4.
+
+## Phase 2 — Reliable discovery (in progress)
 
 - Validate current-location startup, denial/timeout recovery, manual city precedence and stale-request cancellation on phones.
 - Recheck city versus nearby search routing, cuisine/category filters, recommendation distance and repeat-free Surprise Me.
 - Improve coverage diagnostics, provider failure/retry states, caching and photo/detail fallbacks without inventing ratings or images.
 - Define supported provider capacity and aggregate request-budget strategy before significant traffic. GitHub Pages cannot host a server proxy.
 - Exit: reproducible nearby discovery and useful recovery for failed/missing provider data across representative areas.
+
+First repair: retain supported food-court, accommodation, nature, attraction and activity map types that were silently dropped by the loaded-map parser. Added category regression checks; this improves supported coverage and does not promise exhaustive place listings.
 
 ## Phase 3 — Real accounts and privacy
 

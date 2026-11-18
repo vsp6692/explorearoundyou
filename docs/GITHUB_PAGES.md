@@ -7,6 +7,10 @@ Owner decision (18 November 2026): **GitHub Pages**, public support via **GitHub
 - Do not post private notes, location history, backup files, account identifiers or credentials in issues.
 - The previous Sites project returns “project not found”. Its `.openai/hosting.json` identity is preserved for history, not used by this workflow.
 
+## Deployment status
+
+Deployment run [44280081242](https://github.com/vsp6692/explorearoundyou/actions/runs/44280081242) succeeded on 18 November 2026. The permanent URL and checked worker/manifest/photo/information routes return HTTP 200; deployed mobile Chromium map smoke check passed. The setup notes below are retained for future recovery.
+
 ## One-time repository setting
 
 In https://github.com/vsp6692/explorearoundyou/settings/pages choose **Build and deployment → Source → GitHub Actions**. This requires a repository administrator. The public API reported `has_pages: false` and the target returned 404 on 18 November 2026. SSH push access alone cannot change this setting. No private credentials are needed in source code or chat.
