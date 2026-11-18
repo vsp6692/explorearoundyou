@@ -1,5 +1,7 @@
 # Current state and launch verdict
 
+> Follow-up: the first location/trip blocker repairs are implemented. See [fix validation](docs/design/LOCATION_AND_TRIP_FIX_VALIDATION.md). The findings below describe the original audit baseline; remaining release gates still apply.
+
 Audit date: 2026-11-18  
 Repository: `/Users/satheesh/Work/explorearoundyou`  
 Baseline: `83f63fe221a44aef40267dac9c5d3a3112af2b87`  

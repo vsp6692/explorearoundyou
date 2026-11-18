@@ -11,18 +11,18 @@ import {mapPlaceFromFeature,normalizeLongitude,type Place} from '../lib/places';
 import type {CommonsPhoto} from '../lib/photos';
 import ExplorationMist from './ExplorationMist';
 export type Destination={name:string;lat:number;lon:number};
-type Props={destination:Destination;onError:(message:string)=>void;places:Place[];photos:Record<string,CommonsPhoto>;onSelect:(place:Place)=>void;onGroup:(places:Place[])=>void;pixel:boolean;mist:boolean;visits:Visit[];flat:boolean;dark:boolean;onViewportChange:(center:Destination)=>void;mystery:boolean;revealed:string[];onVisiblePlaces:(places:Place[])=>void;selectedId?:string;selectedPlace?:Place|null;itinerary?:Place[];itineraryVersion?:number};
+type Props={destination:Destination;onError:(message:string)=>void;places:Place[];photos:Record<string,CommonsPhoto>;onSelect:(place:Place)=>void;onGroup:(places:Place[])=>void;pixel:boolean;mist:boolean;visits:Visit[];flat:boolean;dark:boolean;onViewportChange:(center:Destination)=>void;mystery:boolean;revealed:string[];onVisiblePlaces:(places:Place[])=>void;onUserMapMove?:()=>void;selectedId?:string;selectedPlace?:Place|null;itinerary?:Place[];itineraryVersion?:number};
 const NO_STOPS:Place[]=[];
 const glyphs:Record<string,string>={Food:'🍜',Stays:'🛏️',Beaches:'🏖️',Parks:'🌳',Attractions:'✦',Shopping:'🛍️',Fun:'🎨'};
 function paint(element:HTMLElement,category:string,pixel:boolean,mystery:boolean,text:string){
  element.replaceChildren();if(!pixel){element.textContent=text;return}
  const image=document.createElement('img');image.src=pixelIcon(category,mystery);image.alt='';image.width=24;image.height=24;image.className='pixel-sprite';image.onerror=()=>{element.textContent=text};element.append(image);
 }
-export default function WorldMap({destination,onError,places,photos,onSelect,onGroup,pixel,onVisiblePlaces,mystery,revealed,flat,dark,onViewportChange,mist,visits,selectedId,selectedPlace,itinerary=NO_STOPS,itineraryVersion=0}:Props){
+export default function WorldMap({destination,onError,places,photos,onSelect,onGroup,pixel,onVisiblePlaces,mystery,revealed,flat,dark,onViewportChange,mist,visits,onUserMapMove,selectedId,selectedPlace,itinerary=NO_STOPS,itineraryVersion=0}:Props){
  const [attempt,setAttempt]=useState(0),[status,setStatus]=useState<'loading'|'ready'|'error'>('loading');
  const container=useRef<HTMLDivElement>(null),map=useRef<maplibregl.Map|null>(null),destinationPin=useRef<maplibregl.Marker|null>(null);
  const settings=useRef({dark,flat,pixel});settings.current={dark,flat,pixel};
- const callbacks=useRef({onSelect,onGroup});callbacks.current={onSelect,onGroup};
+ const callbacks=useRef({onSelect,onGroup,onUserMapMove});callbacks.current={onSelect,onGroup,onUserMapMove};
  const pins=useRef(new Map<string,{marker:maplibregl.Marker;element:HTMLButtonElement;signature:string}>());
  useEffect(()=>{
   if(!container.current)return;
@@ -30,12 +30,14 @@ export default function WorldMap({destination,onError,places,photos,onSelect,onG
   const timer=setTimeout(()=>setStatus(s=>s==='ready'?s:'error'),20000);
   try{
    maplibregl.setWorkerUrl(new URL('/maplibre-gl-worker.mjs',location.origin).href);
-   const m=new maplibregl.Map({container:container.current,style:process.env.NEXT_PUBLIC_MAP_STYLE||'https://tiles.openfreemap.org/styles/liberty',transformStyle:(_previous,next)=>prepareMapStyle(next),center:[80.2707,13.0827],zoom:15,pitch:settings.current.flat?0:30,bearing:0,maxPitch:60,attributionControl:{compact:true}});
+   const m=new maplibregl.Map({container:container.current,style:process.env.NEXT_PUBLIC_MAP_STYLE||'https://tiles.openfreemap.org/styles/liberty',transformStyle:(_previous,next)=>prepareMapStyle(next),center:[destination.lon,destination.lat],zoom:destination.name==='Choose an area'?2:15,pitch:settings.current.flat?0:30,bearing:0,maxPitch:60,attributionControl:{compact:true}});
    instance=m;map.current=m;m.dragRotate.disable();m.touchZoomRotate.disableRotation();m.touchPitch.disable();
    m.once('load',()=>{
     clearTimeout(timer);applyMapTheme(m,settings.current.dark,settings.current.pixel);
     setStatus('ready');
    });
+   m.on('dragstart',()=>callbacks.current.onUserMapMove?.());
+   m.on('movestart',event=>{if('originalEvent' in event&&event.originalEvent)callbacks.current.onUserMapMove?.()});
    m.on('moveend',()=>{const c=m.getCenter();onViewportChange({lat:c.lat,lon:normalizeLongitude(c.lng),name:'This map area'})});
    m.on('idle',()=>{
     const sources=[...new Set((m.getStyle().layers||[]).filter(l=>'source-layer' in l&&l['source-layer']==='poi').map(l=>'source' in l?String(l.source):''))].filter(Boolean);
@@ -53,7 +55,7 @@ export default function WorldMap({destination,onError,places,photos,onSelect,onG
  useEffect(()=>{map.current?.easeTo({pitch:flat?0:30,bearing:0,duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:450})},[flat,status]);
  useEffect(()=>{
   const m=map.current;if(!m)return;
-  m.flyTo({center:[destination.lon,destination.lat],zoom:15,essential:false});destinationPin.current?.remove();
+  m.flyTo({center:[destination.lon,destination.lat],zoom:destination.name==='Choose an area'?2:15,essential:false});destinationPin.current?.remove();
   const el=document.createElement('div');el.className='destination-pin';el.textContent='✦';el.setAttribute('aria-label',destination.name);
   destinationPin.current=new maplibregl.Marker({element:el}).setLngLat([destination.lon,destination.lat]).addTo(m);
  },[destination,attempt]);

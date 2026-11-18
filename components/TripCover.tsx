@@ -10,7 +10,7 @@ export default function TripCover({trip,onOpen,label='Open trip'}:{trip:Pick<Tri
  const stop=trip.places.find(place=>commonsTitle(place.photoTitle));
  const title=commonsTitle(stop?.photoTitle);
  const [loaded,setLoaded]=useState<{title:string;photo:CommonsPhoto}|null>(null);
- const photo=loaded?.title===title?loaded.photo:null;
+ const photo=loaded && title && loaded.title===title?loaded.photo:null;
  useEffect(()=>{
   setLoaded(null);if(!title||!container.current)return;
   const controller=new AbortController();let active=true,started=false;let timer:ReturnType<typeof setTimeout>|undefined;

@@ -1,5 +1,7 @@
 # Prioritized development roadmap and release recommendation
 
+> Follow-up: the first location/trip blocker repairs are implemented. See [fix validation](docs/design/LOCATION_AND_TRIP_FIX_VALIDATION.md). The findings below describe the original audit baseline; remaining release gates still apply.
+
 Audit date: 2026-11-18. Baseline `83f63fe`. Proposal only; no implementation started. Findings/status definitions and evidence are in CURRENT_STATE.md and MISSING_FEATURES.md. This plan replaces neither source nor existing deployment until approved.
 
 ## Top 10 issues before public launch
