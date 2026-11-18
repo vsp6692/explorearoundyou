@@ -6,6 +6,7 @@ import AccountPanel from './AccountPanel';
 import PlaceCard from './PlaceCard';
 import {CUISINES} from '../lib/cuisines';
 import {discoverySearch} from '../lib/discovery-search';
+import {DATA_EVENT,writeDeviceCollection} from '../lib/device-data';
 import {createLocationRequest,INITIAL_AREA,FALLBACK_AREA,type LocationFix} from '../lib/location';
 import {geocodeJson} from '../lib/geocoding';
 import {discoveryPool,searchLocations,type SearchLocation} from '../lib/discovery-pool';
@@ -48,7 +49,7 @@ export default function Explorer({account,requestedPlace,requestedCategory,reque
  const [mystery,setMystery]=useState(false);const [revealed,setRevealed]=useState<string[]>([]);
  const [journal,setJournal]=useState(false);const [visits,setVisits]=useState<Visit[]>([]);
  useEffect(()=>{try{setVisits(readVisits(localStorage.getItem('explorearoundyou-visits')))}catch{}},[]);
- function updateVisits(next:Visit[]){setVisits(next);onVisitsChange(next);try{localStorage.setItem('explorearoundyou-visits',JSON.stringify(next))}catch{setMessage('Progress could not be saved in this browser; it will last for this visit only.')}}
+ function updateVisits(next:Visit[]){try{writeDeviceCollection(localStorage,'explorearoundyou-visits',next);setVisits(next);onVisitsChange(next)}catch(error){setMessage(error instanceof Error?error.message:'Visit marks could not be saved. Your previous progress is kept.')}}
  function toggleVisit(p:Place){updateVisits(visits.some(v=>samePlace(v,p))?visits.filter(v=>!samePlace(v,p)):[...visits,{id:p.id,name:p.name,lat:p.lat,lon:p.lon,category:p.category,kind:p.kind,visitedAt:new Date().toISOString()}])}
  const [intent,setIntent]=useState<SearchIntent|null>(null);
  const [mapVersion,setMapVersion]=useState(0);const visiblePlaces=useRef<Place[]>([]);const receiveVisiblePlaces=useCallback((p:Place[])=>{const signature=(items:Place[])=>items.map(v=>v.id).sort().join('|');if(signature(p)!==signature(visiblePlaces.current)){visiblePlaces.current=p;setMapVersion(v=>v+1)}},[]);
@@ -60,7 +61,8 @@ export default function Explorer({account,requestedPlace,requestedCategory,reque
  useEffect(()=>{try{setSaved(readBookmarks(localStorage.getItem('explorearoundyou-saved')));setPixel(localStorage.getItem('explorearoundyou-style')==='pixel')}catch{}return()=>{request.current?.abort();searchRequest.current?.abort()}},[]);
  useEffect(()=>{if(savedPlaces)setSaved(savedPlaces)},[savedPlaces]);
  useEffect(()=>{if(visitMarks)setVisits(visitMarks)},[visitMarks]);
- function bookmark(p:Place){const next=saved.some(x=>samePlace(x,p))?saved.filter(x=>!samePlace(x,p)):[...saved,p];setSaved(next);onSavedChange(next);try{localStorage.setItem('explorearoundyou-saved',JSON.stringify(next))}catch{setMessage('Your browser could not save this collection. It will last for this visit only.')}}
+ useEffect(()=>{const refresh=()=>{try{setPixel(localStorage.getItem('explorearoundyou-style')==='pixel');setMist(localStorage.getItem('explorearoundyou-mist')==='on')}catch{}setRevealed([]);setSelected(null);recentSurprises.current=[]};window.addEventListener(DATA_EVENT,refresh);return()=>window.removeEventListener(DATA_EVENT,refresh)},[]);
+ function bookmark(p:Place){const next=saved.some(x=>samePlace(x,p))?saved.filter(x=>!samePlace(x,p)):[...saved,p];try{writeDeviceCollection(localStorage,'explorearoundyou-saved',next);setSaved(next);onSavedChange(next)}catch(error){setMessage(error instanceof Error?error.message:'Saved places could not be updated. Your previous collection is kept.')}}
  function useVisiblePlaces(random=false){
   const found=selectDiscoveries(discoveryPool(discoveryPool(visiblePlaces.current,photoPlaces.map(p=>p.place)),widerPlaces),center,radius,category,intent,account.interests,preferredOnly,cuisine).filter(p=>matchesDiscoveryCategory(p,categoryId));
   setGroup(null);setPlaces(found);setSelected(null);setProfileOpen(false);setJournal(false);setCollection(false);setListOpen(!random||!found.length);
@@ -155,7 +157,7 @@ export default function Explorer({account,requestedPlace,requestedCategory,reque
  const visualPlaces=useMemo(()=>{const items=itinerary.length?itinerary:rankDiscoveries(group||places,placePhotos,account.interests);return gpsOrigin?items.map(p=>({...p,distance:distanceKm(gpsOrigin.lat,gpsOrigin.lon,p.lat,p.lon)})):items},[group,places,placePhotos,account.interests,itinerary,gpsOrigin]);
  const panelOpen=!!selected||listOpen||collection||journal||profileOpen;
  const discoveryTitle=DISCOVERY_CATEGORIES.find(c=>c.id===categoryId)?.label||'Nearby places';
- return <main className={`explorer discovery premium-explorer mode-${viewMode} ${dark?'dark':''} ${pixel?'pixel-world':''} ${panelOpen?'panel-open':''} ${detailExpanded?'detail-expanded':''}`}>
+ return <main id="explore-main" tabIndex={-1} className={`explorer discovery premium-explorer mode-${viewMode} ${dark?'dark':''} ${pixel?'pixel-world':''} ${panelOpen?'panel-open':''} ${detailExpanded?'detail-expanded':''}`}>
   <section className="canvas">
    <div className="explore-top">
     <header className="explore-header"><div className="explore-location"><span>EXPLORE AROUND YOU</span><h1>{locationStatus==='requesting'?'Finding your location…':areaName}</h1><small>{gpsOrigin&&distanceKm(center.lat,center.lon,gpsOrigin.lat,gpsOrigin.lon)<.05?'Near your location':'Exploring the selected map area'}</small></div><div className="explore-header-actions"><IconButton icon="search" label={searchOpen?'Close search':'Search a destination'} onClick={()=>setSearchOpen(!searchOpen)} aria-expanded={searchOpen}/><IconButton icon="profile" label="Preferences and profile" onClick={onProfileRequest}/></div></header>

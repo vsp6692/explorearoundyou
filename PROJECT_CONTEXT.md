@@ -1,6 +1,11 @@
 # Explore Around You — complete project handoff
 
-Last updated: 2026-11-16 (Asia/Kolkata).
+Last updated: 2026-11-18 (Asia/Kolkata).
+
+## Latest continuation
+
+Owner selected GitHub Pages and GitHub issues for public support. See `docs/GITHUB_PAGES.md` for the one-time Pages source setting and base-path build. The existing Site identity remains untouched. `docs/WEB_RELEASE_STATUS.md` records backup/recovery, error boundaries, privacy/attribution pages, checks and remaining external launch blockers. Do not claim all audit phases or native apps are complete.
+
 
 ## Current scope — read this before the historical handoff
 

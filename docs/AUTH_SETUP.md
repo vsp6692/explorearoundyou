@@ -6,7 +6,7 @@ Status: implementation prepared, cloud project and OAuth providers not connected
 
 Create a Supabase project in your own account. Apply `supabase/schema.sql` once using its SQL editor. The migration creates profiles, search history, row-level security and the consent-enforcing `record_explorer_search` function. Do not disable RLS to fix a failed request.
 
-Set Auth's Site URL to `https://explorearoundyou.lyric-6185.chatgpt.site/`. Add that exact URL and `http://localhost:3001/` to the redirect allowlist. Add other local ports only when used. The static client returns to `/`; Supabase handles the provider callback and the SDK exchanges the PKCE code in the original browser.
+Set Auth's Site URL to `https://vsp6692.github.io/explorearoundyou/`. Add that exact URL and `http://localhost:3001/` to the redirect allowlist. Add other local ports only when used. The Pages static client returns to `/explorearoundyou/`; Supabase handles the provider callback and the SDK exchanges the PKCE code in the original browser.
 
 Existing installations: apply `supabase/migrations/002_profile_interests.sql` to add the validated interests array. New `schema.sql` installations already include it. Interests are chosen explicitly and saved independently of history consent. Guest interests remain in browser storage; signing in does not upload them.
 
@@ -18,6 +18,8 @@ Existing installations: apply `supabase/migrations/002_profile_interests.sql` to
 Provider secrets belong in Supabase settings, never `NEXT_PUBLIC_*` variables, source control or chat. This app requests identity information, not social posts, friends or publishing permissions. Google/Facebook identity data and email may be retained by Supabase Auth. The application profile stores only the user ID, chosen display name and history preference.
 
 ## 3. Configure the static build
+
+For the approved permanent host, follow [GitHub Pages deployment](GITHUB_PAGES.md). Repository Actions variables use the same two public names below.
 
 Copy `.env.example` to `.env.local`. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` from your project's Connect/API settings. Use only a browser publishable key, never a service-role or secret key.
 

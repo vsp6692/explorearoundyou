@@ -4,6 +4,8 @@
 
 A playful, free, MIT-licensed map exploration website. Map-first discovery MVP.
 
+Permanent hosting choice: **GitHub Pages**. [Deployment setup](docs/GITHUB_PAGES.md) · [Current repair/release status](docs/WEB_RELEASE_STATUS.md) · [Public support](https://github.com/vsp6692/explorearoundyou/issues). The target is not live until Pages is enabled and its deploy workflow succeeds.
+
 ## Run
 
 Requires Node.js 20.9 or newer.

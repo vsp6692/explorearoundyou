@@ -1,4 +1,5 @@
 'use client';
+import {appPath} from '../lib/app-path';
 import {useEffect,useRef,useState,type FormEvent} from 'react';
 import AppIcon from './AppIcon';
 import PlacePhoto from './PlacePhoto';
@@ -52,7 +53,7 @@ export default function TripScreens({controller,creating,initialPlace,onCreated,
     <div className="date-fields"><label>Start date<input type="date" name="startDate" value={startDate} max={endDate||undefined} onChange={event=>setStartDate(event.target.value)}/></label><label>End date<input type="date" name="endDate" value={endDate} min={startDate||undefined} onChange={event=>setEndDate(event.target.value)}/></label></div>
     <p className="app-note">Dates are optional. Leave both empty to keep a trip for later.</p>
     <label>Travellers<input type="number" min={1} max={20} name="travellers" defaultValue={editing?trip?.travellers:1} required/></label>
-    <fieldset className="cover-choices"><legend>Inspiration cover</legend>{(['coast','mountains','city'] as const).map(choice=><label key={choice}><input type="radio" name="cover" value={choice} checked={cover===choice} onChange={()=>setCover(choice)}/><img src={`/images/journey-${choice}.jpg`} alt="" loading="lazy"/><span>{choice}</span></label>)}</fieldset>
+    <fieldset className="cover-choices"><legend>Inspiration cover</legend>{(['coast','mountains','city'] as const).map(choice=><label key={choice}><input type="radio" name="cover" value={choice} checked={cover===choice} onChange={()=>setCover(choice)}/><img src={appPath(`/images/journey-${choice}.jpg`)} alt="" loading="lazy"/><span>{choice}</span></label>)}</fieldset>
     <p className="app-note">A mapped stop photo is used when available. Inspiration covers are decorative. Trips and memories stay in this browser.</p>
     {error&&<p className="form-error" role="alert">{error}</p>}
     <Button variant="primary" className="trip-submit" type="submit" disabled={!controller.ready}>{editing?'Save changes':'Create trip'}<AppIcon name="arrow" size={19}/></Button>

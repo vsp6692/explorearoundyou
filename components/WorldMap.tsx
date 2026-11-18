@@ -1,4 +1,5 @@
 'use client';
+import {appPath} from '../lib/app-path';
 import {useEffect,useRef,useState} from 'react';
 import * as maplibregl from 'maplibre-gl';
 import {applyMapTheme} from '../lib/map-theme';
@@ -29,7 +30,7 @@ export default function WorldMap({destination,onError,places,photos,onSelect,onG
   setStatus('loading');let instance:maplibregl.Map|undefined,observer:ResizeObserver|undefined;
   const timer=setTimeout(()=>setStatus(s=>s==='ready'?s:'error'),20000);
   try{
-   maplibregl.setWorkerUrl(new URL('/maplibre-gl-worker.mjs',location.origin).href);
+   maplibregl.setWorkerUrl(new URL(appPath('/maplibre-gl-worker.mjs'),location.origin).href);
    const m=new maplibregl.Map({container:container.current,style:process.env.NEXT_PUBLIC_MAP_STYLE||'https://tiles.openfreemap.org/styles/liberty',transformStyle:(_previous,next)=>prepareMapStyle(next),center:[destination.lon,destination.lat],zoom:destination.name==='Choose an area'?2:15,pitch:settings.current.flat?0:30,bearing:0,maxPitch:60,attributionControl:{compact:true}});
    instance=m;map.current=m;m.dragRotate.disable();m.touchZoomRotate.disableRotation();m.touchPitch.disable();
    m.once('load',()=>{
