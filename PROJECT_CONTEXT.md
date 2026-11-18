@@ -4,6 +4,9 @@ Last updated: 2026-11-18 (Asia/Kolkata).
 
 ## Latest continuation
 
+Latest user request: list remaining work in phases and execute sequentially. `docs/EXECUTION_PHASES.md` is the active order; start with permanent deployment. GitHub run 44237420619 passed build/tests but failed configure-pages before publishing. Public metadata now reports Pages enabled; a fresh push retries after that state change.
+
+
 Owner selected GitHub Pages and GitHub issues for public support. See `docs/GITHUB_PAGES.md` for the one-time Pages source setting and base-path build. The existing Site identity remains untouched. `docs/WEB_RELEASE_STATUS.md` records backup/recovery, error boundaries, privacy/attribution pages, checks and remaining external launch blockers. Do not claim all audit phases or native apps are complete.
 
 
