@@ -7,6 +7,7 @@ export function rankDiscoveries(places:Place[],photos:Readonly<Record<string,unk
  const preferred=new Set(cleanInterests(interests));
  return [...places].sort((a,b)=>
   Number(preferred.has(b.category))-Number(preferred.has(a.category))||
+  Math.floor(a.distance)-Math.floor(b.distance)||
   Number(!!photos[b.id])-Number(!!photos[a.id])||
   a.distance-b.distance
  );

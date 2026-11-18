@@ -1,5 +1,5 @@
 'use client';
-import {useState} from 'react';
+import {useState,useEffect} from 'react';
 import AppIcon from './AppIcon';
 import {IconButton,Skeleton} from './ui';
 import {samePlace} from '../lib/adventures';
@@ -9,7 +9,9 @@ type Props={places:Place[];photos:Record<string,CommonsPhoto>;busy:boolean;categ
 export default function DiscoveryCards({places,photos,busy,category,onSelect,onBrowse,onClear,resetLabel='Show all places',expanded=false,saved=[],onSave,distanceLabel='from map area'}:Props){
  const [failed,setFailed]=useState<Record<string,string>>({});
  // The caller owns relevance ordering. Photo availability never overrides interests.
- const shown=places.slice(0,expanded?180:12);
+ const [limit,setLimit]=useState(36);
+ useEffect(()=>setLimit(36),[category,expanded]);
+ const shown=places.slice(0,expanded?limit:12);
  return <section className={`discovery-cards ${expanded?'discovery-cards-expanded':''}`} aria-label="Places to explore">
   <div className="discovery-cards-heading"><div><span className="overline">A LITTLE LOOK AROUND</span><h2>{category==='Everything'?'Pick your next little adventure':`${category} around you`}</h2></div><button onClick={onBrowse}>See all <AppIcon name="arrow" size={17}/></button></div>
   <div className="discovery-card-track">{shown.map(p=>{
@@ -26,6 +28,6 @@ export default function DiscoveryCards({places,photos,busy,category,onSelect,onB
   })}
   {!shown.length&&busy&&[0,1,2].map(i=><div className="photo-card-skeleton" key={i}><Skeleton/><span>Finding nearby places…</span></div>)}
   {!shown.length&&!busy&&<div className="visual-discovery-empty"><AppIcon name="compass" size={30}/><div><strong>No mapped matches here yet.</strong><p>Try all places, a wider distance, or another area.</p></div><button onClick={onClear}>{resetLabel}</button></div>}
-  </div>
+  </div>{expanded&&shown.length<places.length&&<button className="ui-button load-more-places" onClick={()=>setLimit(n=>n+36)}>Show more places ({shown.length} of {places.length})</button>}
  </section>;
 }

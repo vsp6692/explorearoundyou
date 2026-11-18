@@ -14,5 +14,5 @@ export function selectDiscoveries(places:Place[],center:{lat:number;lon:number},
  return places.map(p=>({...p,distance:distanceKm(center.lat,center.lon,p.lat,p.lon)}))
  .filter(p=>p.distance<=radius&&(category==='Everything'||p.category===category)&&(category!=='Food'||matchesCuisine(p,cuisine))&&matchesIntent(p,intent)&&(!preferredOnly||preferred.has(p.category)))
  .sort((a,b)=>(Number(preferred.has(b.category))-Number(preferred.has(a.category)))||a.distance-b.distance)
- .slice(0,180);
+ .slice(0,1500);
 }
