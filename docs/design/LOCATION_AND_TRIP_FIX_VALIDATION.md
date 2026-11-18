@@ -21,6 +21,6 @@
 - Browser: new photo-less trip creates successfully, accepts a journal note, survives reload and reopens without the audited crash.
 - Browser: denied startup labels Chennai as an example and explains browser permissions. Manual London search remains selected after a late Paris callback.
 - Browser: a shared Tokyo link stays selected. At 390×844, approximate GPS is labelled, “cafés near me” reacquires GPS and selects Cafés, with no page overflow.
-- GPS was simulated in an isolated browser profile; physical-device permission/accuracy testing is still required. The browser automation connection briefly dropped, then recovered; repeating the timeout callback check showed the explicit retry/search message while preserving the selected area. The public test URL also rendered the new photo-less trip form successfully.
+- GPS was simulated in an isolated browser profile; physical-device permission/accuracy testing is still required. The final timeout-UI and public-form rechecks could not complete because browser automation repeatedly reported no available host. Controller timeout tests pass; the earlier local trip/GPS checks above completed. No successful final public-form check is claimed.
 
 Remaining launch work includes provider reliability/coverage, permanent hosting, data export/recovery, broader UI error boundaries/accessibility and optional account/sync activation. This repair does not declare the product launch-ready.
