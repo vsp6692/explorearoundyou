@@ -21,7 +21,7 @@ export default function DiscoveryCards({places,photos,busy,category,onSelect,onB
      <div className="discovery-card-copy"><h3>{p.name}</h3><span>{categoryLabel} · {p.distance<1?`${Math.round(p.distance*1000)} m`:`${p.distance.toFixed(1)} km`}</span><small className="discovery-distance-note">{distanceLabel}</small>{p.description&&<p className="discovery-description">{p.description}</p>}</div>
     </button>
     {onSave&&<IconButton className="discovery-save" icon="bookmark" label={`${isSaved?'Unsave':'Save'} ${p.name}`} aria-pressed={isSaved} onClick={()=>onSave(p)}/>}
-    {hasPhoto&&<p className="discovery-card-credit"><a href={photo.page} target="_blank" rel="noreferrer">{photo.author}</a> · <a href={photo.licenseUrl} target="_blank" rel="noreferrer">{photo.license}</a></p>}
+    {hasPhoto&&<p className="discovery-card-credit" title={`${photo.author} · ${photo.license}`}><a href={photo.page} target="_blank" rel="noreferrer">{photo.author}</a> · <a href={photo.licenseUrl} target="_blank" rel="noreferrer">{photo.license}</a></p>}
    </article>;
   })}
   {!shown.length&&busy&&[0,1,2].map(i=><div className="photo-card-skeleton" key={i}><Skeleton/><span>Finding nearby places…</span></div>)}

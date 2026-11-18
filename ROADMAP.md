@@ -1,14 +1,14 @@
 # Current implementation and remaining work
 
-Updated 2026-11-17. Builds and automated tests do not establish real-phone acceptance.
+Updated 2026-11-18. Builds and automated tests do not establish real-phone acceptance.
 
 ## Shared web and native design direction
 
-The supplied travel-app references define the visual target for web, iOS and Android: warm backgrounds, photo cards, pastel accents and Home/My Trips/Create/Map/Profile navigation. See `docs/MOBILE_APP_PLAN.md`. The website now implements that app shell plus device-local trips, itineraries and text memories. Native shells, device integration and store builds are still future work.
+The supplied travel-app references define the visual target for web, iOS and Android: warm backgrounds, photo cards, pastel accents and Explore/Map/My Trips/Journal/Profile navigation. See `docs/MOBILE_APP_PLAN.md`. The website now implements that app shell plus device-local trips, itineraries and text memories. Native shells, device integration and store builds are still future work.
 
 ## Implemented
 
-- App-style Home, My Trips, Create, Map and Profile navigation, with desktop responsive layouts.
+- Map-first Explore, Map, My Trips, Journal and Profile navigation, with a desktop navigation rail and compact mobile dock. Collections remain available in Profile.
 - Local trip creation/editing, date status filters/search, saved-place itineraries, text journal entries and mapped-stop photo gallery.
 - Real interactive map, submitted worldwide location search and permission-based location.
 - Home-screen manifest, original icons and mobile safe-area support; no offline map claim.
@@ -18,13 +18,15 @@ The supplied travel-app references define the visual target for web, iOS and And
 - Local bookmarks, manually recorded visits, badges, mystery pins and three-stop ideas.
 - Optional exploration mist, visited-pin checks and a journal collection of recent visit marks.
 - Selected-place detail matching, external directions, automatically loaded licensed Commons photos from explicit OSM/Wikidata associations.
-- Responsive category grid, separated pin groups, gentler Nature 3D, and cuisine choices based on mapped tags (public discovery service still unreliable).
+- Horizontal category chips, stable grouped/selected photo pins, optional Nature 3D, and cuisine choices based on mapped tags (public discovery service still unreliable).
 - Shareable place links, native share/copy fallback, simpler mobile controls and basic panel focus handling.
 - Prepared optional Google/Facebook + Supabase profiles/history/interest integration; **not activated**.
 
-## Next acceptance checks
+## Remaining acceptance checks
 
-0. Test Home → create trip → save a real map place → add to itinerary → add memory → reload → reopen and find the stop on Map. Confirm failure notices under denied/full browser storage. Personal photo uploads, trip cloud sync and native apps are not yet built.
+The five-stage premium UI pass is implemented. See `docs/design/IMPLEMENTATION_STATUS.md` for actual browser checks and remaining limits.
+
+0. Browser-verified: Explore → create trip → save a real map place → add to itinerary → add memory → reload → reopen and find the stop on Map. Physical-device and full-storage checks remain. Personal photo uploads, trip cloud sync and native apps are not yet built.
 
 1. On a real phone, verify map rendering and touch gestures, category changes, Explore, Surprise, place details, panel reachability and 2D/3D switching. Check Nature/Pixel and light/dark combinations, icon legibility and switching without camera resets.
 2. Verify shared links open correctly, native sharing/copy cancellation and photo success/failure states.
@@ -33,7 +35,7 @@ The supplied travel-app references define the visual target for web, iOS and And
 
 ## Public testing and permanent hosting
 
-A temporary public test link serves the current local static export: https://nut-influences-unknown-causing.trycloudflare.com. It requires this Mac, the app server on port 3002 and the cloudflared process to remain running. It is not permanent hosting.
+A temporary public test link serves the current local static export: https://closer-greatest-picked-unit.trycloudflare.com. It requires this Mac, the app server on port 3002 and the cloudflared process to remain running. It is not permanent hosting.
 
 The existing Sites project still returns NOT_FOUND and its last ChatGPT URL returns HTTP 404. Restoring that Site/account connection or configuring permanent hosting is still needed.
 

@@ -1,0 +1,16 @@
+.theme-preferences{margin:20px 0;color:var(--app-ink)}
+.theme-preferences fieldset{border:0;margin:0;padding:0;min-width:0}
+.theme-preferences legend{font-size:18px;font-weight:650;letter-spacing:-.3px;padding:0;margin-bottom:8px;color:var(--app-ink)}
+.travel-app .theme-preferences fieldset>p{font-size:14px;line-height:1.6;color:var(--app-muted);margin:0 0 16px}
+.preference-theme-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.travel-app .preference-theme{display:flex;align-items:center;justify-content:flex-start;gap:9px;position:relative;border:1px solid var(--app-line);border-radius:16px;padding:10px;min-height:64px;background:var(--app-card);box-shadow:none;color:var(--app-ink);font-size:13px;line-height:1.35;text-align:left;transition:border-color var(--motion),background var(--motion)}
+.preference-theme-icon{display:grid;place-items:center;flex-shrink:0;width:36px;height:36px;border-radius:12px;background:var(--accent-lilac)}
+.tone-sage .preference-theme-icon{background:var(--accent-sage)}.tone-peach .preference-theme-icon{background:var(--accent-peach)}
+.travel-app .preference-theme[aria-pressed=true]{background:var(--accent-lilac);border-color:var(--focus)}
+.preference-theme-check{width:16px;min-width:16px;margin-left:auto;display:grid;place-items:center;color:var(--focus)}
+.preference-theme:focus-visible{outline:3px solid var(--focus);outline-offset:2px}.preference-theme:disabled{opacity:.55;cursor:default}
+.travel-app .theme-preferences .preference-explanation,.travel-app .theme-preferences .preference-status{font-size:13px;line-height:1.6;color:var(--app-muted);margin:14px 0}
+.theme-preferences>.ui-button{width:100%;margin-top:4px}
+@media(max-width:359px){.travel-app .preference-theme{padding:9px;gap:7px;font-size:12px;min-height:64px}.preference-theme-icon{width:28px;height:32px}.preference-theme-check{width:12px;min-width:12px}}
+@media(min-width:1100px){.preference-theme-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.travel-app .preference-theme{transition:none}}

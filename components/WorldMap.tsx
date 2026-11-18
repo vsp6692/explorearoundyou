@@ -60,7 +60,8 @@ export default function WorldMap({destination,onError,places,photos,onSelect,onG
  useEffect(()=>{
   const m=map.current;if(!m||status!=='ready'||!itinerary.length)return;
   const bounds=new maplibregl.LngLatBounds();for(const place of itinerary)bounds.extend([nearestWorldLongitude(place.lon,itinerary[0].lon),place.lat]);
-  m.fitBounds(bounds,{padding:{top:40,right:65,bottom:170,left:45},maxZoom:15,duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:550});
+  const width=m.getContainer().clientWidth,height=m.getContainer().clientHeight;
+  m.fitBounds(bounds,{padding:{top:Math.min(40,height*.1),right:Math.min(65,width*.12),bottom:Math.min(170,height*.4),left:Math.min(45,width*.12)},maxZoom:15,duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:550});
  },[itineraryVersion,status]);
  useEffect(()=>{
   const m=map.current;if(!m||status!=='ready')return;
@@ -78,7 +79,8 @@ export default function WorldMap({destination,onError,places,photos,onSelect,onG
     const {element}=entry,selected=p.id===selectedId,stop=itinerary.findIndex(item=>item.id===p.id);
     const signature=JSON.stringify([p.name,p.category,pixel,secret,photo?.src,photo?.author,group.places.length,visited.has(p.id),mist,selected,stop]);
     if(signature!==entry.signature){
-     element.className=`place-pin nature-pin category-${p.category.toLowerCase()} ${pixel?'pixel-pin':''} ${selected?'selected-pin':''}`;
+     const mapClasses=[...element.classList].filter(name=>name.startsWith('maplibregl-')).join(' ');
+     element.className=`${mapClasses} place-pin nature-pin category-${p.category.toLowerCase()} ${pixel?'pixel-pin':''} ${selected?'selected-pin':''}`;
      paint(element,p.category,pixel,secret,multiple&&!direct?String(group.places.length):secret?'?':glyphs[p.category]||'✦');
      if(multiple&&!direct)element.classList.add('group-pin');
      if(photo){element.replaceChildren();element.classList.add('photo-map-pin');const image=document.createElement('img');image.src=photo.src;image.alt='';image.referrerPolicy='no-referrer';image.onerror=()=>{element.classList.remove('photo-map-pin');paint(element,p.category,pixel,false,glyphs[p.category]||'✦')};const label=document.createElement('span');label.textContent=p.name;element.append(image,label)}
